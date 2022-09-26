@@ -1,1 +1,1 @@
-# BlogProject
+# Проект блога на ASP.NET MVC. Не доработан!!!
