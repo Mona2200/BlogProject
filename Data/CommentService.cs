@@ -22,6 +22,11 @@ namespace BlogProject.Data
          var comment = await _db.Comment.Where(c => c.UserId == id).ToArrayAsync();
          return comment;
       }
+      public async Task<Comment[]> GetCommentByPostId(Guid id)
+      {
+         var comment = await _db.Comment.Where(c => c.PostId == id).ToArrayAsync();
+         return comment;
+      }
       public async Task Save(Comment comment)
       {
          var entry = _db.Entry(comment);

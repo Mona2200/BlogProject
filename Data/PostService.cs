@@ -8,6 +8,7 @@ namespace BlogProject.Data
    {
       private readonly BlogDbContext _db = new BlogDbContext();
       private readonly TagPostService _tagPostService = new TagPostService();
+      private readonly CommentService _commentService = new CommentService();
       public async Task<Post[]> GetPosts()
       {
          var posts = await _db.Post.ToArrayAsync();
@@ -28,7 +29,7 @@ namespace BlogProject.Data
          var entry = _db.Entry(post);
          if (entry.State == EntityState.Detached)
             await _db.Post.AddAsync(post);
-         await _tagPostService.SaveTagPosts(post.Id, tagIds);
+         await _tagPostService.Save(post.Id, tagIds);
          await _db.SaveChangesAsync();
       }
       public async Task Update(Post updatePost, Post newPost, Guid[] tagIds)
@@ -39,13 +40,22 @@ namespace BlogProject.Data
          var entry = _db.Entry(updatePost);
          if (entry.State == EntityState.Detached)
             _db.Post.Update(updatePost);
-         await _tagPostService.UpdateTagPosts(updatePost.Id, tagIds);
+         await _tagPostService.Update(updatePost.Id, tagIds);
          await _db.SaveChangesAsync();
       }
       public async Task Delete(Post post)
       {
          _db.Post.Remove(post);
-         await _tagPostService.DeleteTagPostByPostId(post.Id);
+         var tagPosts = await _tagPostService.GetTagPostByPostId(post.Id);
+         foreach (var tagPost in tagPosts)
+         {
+            await _tagPostService.Delete(tagPost);
+         }
+         var comments = await _commentService.GetCommentByPostId(post.Id);
+         foreach (var comment in comments)
+         {
+            await _commentService.Delete(comment);
+         }
          await _db.SaveChangesAsync();
       }
    }

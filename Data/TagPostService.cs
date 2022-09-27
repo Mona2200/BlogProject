@@ -18,7 +18,7 @@ namespace BlogProject.Data
          var tagPosts = await _db.TagPost.Where(tp => tp.TagId == id).ToArrayAsync();
          return tagPosts;
       }
-      public async Task SaveTagPosts(Guid postId, Guid[] tagIds)
+      public async Task Save(Guid postId, Guid[] tagIds)
       {
          foreach (var tagId in tagIds)
          {
@@ -28,26 +28,19 @@ namespace BlogProject.Data
                await _db.TagPost.AddAsync(tagPost);
          }
       }
-      public async Task UpdateTagPosts(Guid postId, Guid[] tagIds)
-      {
-         await DeleteTagPostByPostId(postId);
-         await SaveTagPosts(postId, tagIds);
-      }
-      public async Task DeleteTagPostByPostId(Guid postId)
+      public async Task Update(Guid postId, Guid[] tagIds)
       {
          var tagPosts = await GetTagPostByPostId(postId);
          foreach (var tagPost in tagPosts)
          {
-            _db.TagPost.Remove(tagPost);
+            await Delete(tagPost);
          }
+         await Save(postId, tagIds);
+
       }
-      public async Task DeleteTagPostByTagId(Guid tagId)
+      public async Task Delete(TagPost tagPost)
       {
-         var tagPosts = await GetTagPostByPostId(tagId);
-         foreach (var tagPost in tagPosts)
-         {
-            _db.TagPost.Remove(tagPost);
-         }
+         _db.TagPost.Remove(tagPost);
       }
    }
 }
