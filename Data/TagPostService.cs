@@ -27,6 +27,7 @@ namespace BlogProject.Data
             if (entry.State == EntityState.Detached)
                await _db.TagPost.AddAsync(tagPost);
          }
+         await _db.SaveChangesAsync();
       }
       public async Task Update(Guid postId, Guid[] tagIds)
       {
@@ -41,6 +42,7 @@ namespace BlogProject.Data
       public async Task Delete(TagPost tagPost)
       {
          _db.TagPost.Remove(tagPost);
+         await _db.SaveChangesAsync();
       }
    }
 }
