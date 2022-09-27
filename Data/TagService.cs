@@ -35,7 +35,11 @@ namespace BlogProject.Data
       public async Task Delete(Tag tag)
       {
          _db.Tag.Remove(tag);
-         await _tagPostService.DeleteTagPostByTagId(tag.Id);
+         var tagPosts = await _tagPostService.GetTagPostByTagId(tag.Id);
+         foreach (var tagPost in tagPosts)
+         {
+            await _tagPostService.Delete(tagPost);
+         }
          await _db.SaveChangesAsync();
       }
    }
