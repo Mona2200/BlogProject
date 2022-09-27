@@ -17,6 +17,11 @@ namespace BlogProject.Data
          var comment = await _db.Comment.Where(c => c.Id == id).FirstOrDefaultAsync();
          return comment;
       }
+      public async Task<Comment[]> GetCommentByUserId(Guid id)
+      {
+         var comment = await _db.Comment.Where(c => c.UserId == id).ToArrayAsync();
+         return comment;
+      }
       public async Task Save(Comment comment)
       {
          var entry = _db.Entry(comment);
@@ -36,6 +41,14 @@ namespace BlogProject.Data
       {
          _db.Comment.Remove(comment);
          await _db.SaveChangesAsync();
+      }
+      public async Task DeleteByUserId(Guid userId)
+      {
+         var comments = await GetCommentByUserId(userId);
+         foreach (var comment in comments)
+         {
+         await Delete(comment);
+         }
       }
    }
 }

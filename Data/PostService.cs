@@ -48,5 +48,13 @@ namespace BlogProject.Data
          await _tagPostService.DeleteTagPostByPostId(post.Id);
          await _db.SaveChangesAsync();
       }
+      public async Task DeleteByUserId(Guid userId)
+      {
+         var posts = await GetPostByUserId(userId);
+         foreach (var post in posts)
+         {
+            await Delete(post);
+         }
+      }
    }
 }

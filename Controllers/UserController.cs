@@ -12,6 +12,8 @@ namespace BlogProject.Controllers
       private readonly ILogger<UserController> _logger;
       private readonly IMapper _mapper;
       private readonly UserService _userService = new UserService();
+      private readonly PostService _postService = new PostService();
+      private readonly CommentService _commentService = new CommentService();
       public UserController(ILogger<UserController> logger, IMapper mapper)
       {
          _logger = logger;
@@ -60,6 +62,8 @@ namespace BlogProject.Controllers
          if (user == null)
             return StatusCode(200, "Не Успех");
          await _userService.Delete(user);
+         await _postService.DeleteByUserId(user.Id);
+         await _commentService.DeleteByUserId(user.Id);
          return StatusCode(200, "Успех");
       }
    }
