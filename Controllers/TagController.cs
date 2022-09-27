@@ -39,20 +39,20 @@ namespace BlogProject.Controllers
       }
       [HttpPost]
       [Route("AddTag")]
-      public async Task<IActionResult> AddTag(TagViewModel view)
+      public async Task<IActionResult> AddTag(AddTagViewModel view)
       {
-         var tag = _mapper.Map<TagViewModel, Tag>(view);
+         var tag = _mapper.Map<AddTagViewModel, Tag>(view);
          await _tagService.Save(tag);
          return StatusCode(200, "Успех");
       }
       [HttpPut]
       [Route("EditTag")]
-      public async Task<IActionResult> EditTag(Guid id, TagViewModel view)
+      public async Task<IActionResult> EditTag(Guid id, AddTagViewModel view)
       {
          var editTag = await _tagService.GetTagById(id);
          if (editTag == null)
             return StatusCode(200, "Не Успех");
-         var newTag = _mapper.Map<TagViewModel, Tag>(view);
+         var newTag = _mapper.Map<AddTagViewModel, Tag>(view);
          await _tagService.Update(editTag, newTag);
          return StatusCode(200, "Успех");
       }

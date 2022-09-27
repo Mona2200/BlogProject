@@ -8,10 +8,13 @@ namespace BlogProject
    {
       public MappingProfile()
       {
-         CreateMap<UserViewModel, User>();
-         CreateMap<PostViewModel, Post>();
-         CreateMap<CommentViewModel, Comment>();
-         CreateMap<TagViewModel, Tag>();
+         CreateMap<RegisterViewModel, User>();
+         CreateMap<AddPostViewModel, Post>();
+         CreateMap<AddCommentViewModel, Comment>();
+         CreateMap<AddTagViewModel, Tag>();
+
+         CreateMap<User, UserViewModel>();
+         CreateMap<Post, PostViewModel>();
       }
    }
 }

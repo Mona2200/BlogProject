@@ -32,9 +32,9 @@ namespace BlogProject.Controllers
       }
       [HttpPost]
       [Route("AddComment")]
-      public async Task<IActionResult> AddComment(Guid UserId, Guid PostId, CommentViewModel view)
+      public async Task<IActionResult> AddComment(Guid UserId, Guid PostId, AddCommentViewModel view)
       {
-         var comment = _mapper.Map<CommentViewModel, Comment>(view);
+         var comment = _mapper.Map<AddCommentViewModel, Comment>(view);
          comment.UserId = UserId;
          comment.PostId = PostId;
          await _commentService.Save(comment);
@@ -42,12 +42,12 @@ namespace BlogProject.Controllers
       }
       [HttpPut]
       [Route("EditComment")]
-      public async Task<IActionResult> EditComment(Guid id, CommentViewModel view)
+      public async Task<IActionResult> EditComment(Guid id, AddCommentViewModel view)
       {
          var comment = await GetCommentById(id);
          if (comment == null)
             return StatusCode(200, "Не Успех");
-         var newComment = _mapper.Map<CommentViewModel, Comment>(view);
+         var newComment = _mapper.Map<AddCommentViewModel, Comment>(view);
          await _commentService.Update(comment, newComment);
          return StatusCode(200, "Успех");
       }

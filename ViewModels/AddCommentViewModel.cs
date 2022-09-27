@@ -2,11 +2,10 @@
 
 namespace BlogProject.ViewModels
 {
-   public class TagViewModel
+   public class AddCommentViewModel
    {
       [Required]
-      [Display(Name = "Название тега")]
       [DataType(DataType.Text)]
-      public string Name { get; set; }
+      public string Content { get; set; }
    }
 }
