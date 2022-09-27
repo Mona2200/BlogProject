@@ -17,6 +17,18 @@ namespace BlogProject.Data
          var tag = await _db.Tag.Where(c => c.Id == id).FirstOrDefaultAsync();
          return tag;
       }
+      public async Task<Tag[]> GetTagByPostId(Guid id)
+      {
+         var tagPosts = await _db.TagPost.Where(t => t.PostId == id).ToArrayAsync();
+         var tags = new Tag[tagPosts.Length];
+         int i = 0;
+         foreach (var tagPost in tagPosts)
+         {
+            tags[i] = await GetTagById(tagPost.TagId);
+            i++;
+         }
+         return tags;
+      }
       public async Task Save(Tag tag)
       {
          var entry = _db.Entry(tag);

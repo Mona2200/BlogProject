@@ -30,6 +30,13 @@ namespace BlogProject.Controllers
          var tag = await _tagService.GetTagById(id);
          return tag;
       }
+      [HttpGet]
+      [Route("GetTagByPostId")]
+      public async Task<Tag[]> GetTagByPostId(Guid id)
+      {
+         var tags = await _tagService.GetTagByPostId(id);
+         return tags;
+      }
       [HttpPost]
       [Route("AddTag")]
       public async Task<IActionResult> AddTag(TagViewModel view)
