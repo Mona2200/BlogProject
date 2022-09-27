@@ -42,13 +42,5 @@ namespace BlogProject.Data
          _db.Comment.Remove(comment);
          await _db.SaveChangesAsync();
       }
-      public async Task DeleteByUserId(Guid userId)
-      {
-         var comments = await GetCommentByUserId(userId);
-         foreach (var comment in comments)
-         {
-         await Delete(comment);
-         }
-      }
    }
 }

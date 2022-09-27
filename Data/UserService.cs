@@ -8,6 +8,8 @@ namespace BlogProject.Data
    public class UserService
    {
       private readonly BlogDbContext _db = new BlogDbContext();
+      private readonly PostService _postService = new PostService();
+      private readonly CommentService _commentService = new CommentService();
       public async Task<User[]> GetUsers()
       {
          var users = await _db.User.ToArrayAsync();
@@ -40,6 +42,16 @@ namespace BlogProject.Data
       public async Task Delete(User user)
       {
          _db.User.Remove(user);
+         var posts = await _postService.GetPostByUserId(user.Id);
+         foreach (var post in posts)
+         {
+            await _postService.Delete(post);
+         }
+         var comments = await _commentService.GetCommentByUserId(user.Id);
+         foreach (var comment in comments)
+         {
+            await _commentService.Delete(comment);
+         }
          await _db.SaveChangesAsync();
       }
    }
