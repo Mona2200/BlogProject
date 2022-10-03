@@ -13,7 +13,7 @@ namespace BlogProject
          CreateMap<AddCommentViewModel, Comment>();
          CreateMap<AddTagViewModel, Tag>();
 
-         CreateMap<User, UserViewModel>();
+         CreateMap<User, UserViewModel>().ForMember(m => m.FullName, opt => opt.MapFrom(u => $"{u.FirstName} {u.LastName}"));
          CreateMap<Post, PostViewModel>();
       }
    }
