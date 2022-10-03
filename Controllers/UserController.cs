@@ -15,6 +15,7 @@ namespace BlogProject.Controllers
       private readonly PostService _postService = new PostService();
       private readonly TagService _tagService = new TagService();
       private readonly CommentService _commentService = new CommentService();
+      private readonly RoleService _roleService = new RoleService();
       public UserController(ILogger<UserController> logger, IMapper mapper)
       {
          _logger = logger;
@@ -46,6 +47,8 @@ namespace BlogProject.Controllers
             i++;
          }
          userViewModel.Posts = postViewModels;
+         var roles = await _roleService.GetRoleByUserId(id);
+         userViewModel.Roles = roles;
          return userViewModel;
       }
       [HttpPost]
@@ -53,6 +56,8 @@ namespace BlogProject.Controllers
       public async Task<IActionResult> Register(RegisterViewModel view)
       {
          var user = _mapper.Map<RegisterViewModel, User>(view);
+         var role = await _roleService.GetRoleByName("user");
+         await _roleService.Save(user.Id, role.Id);
          await _userService.Save(user);
          return StatusCode(200, "Успех");
       }
@@ -68,12 +73,13 @@ namespace BlogProject.Controllers
          return StatusCode(200, "Успех");
       }
       [HttpDelete]
-      [Route("Delete")]
-      public async Task<IActionResult> Delete(Guid id)
+      [Route("DeleteUser")]
+      public async Task<IActionResult> DeleteUser(Guid id)
       {
          var user = await _userService.GetUserById(id);
          if (user == null)
             return StatusCode(200, "Не Успех");
+         await _roleService.Delete(user.Id);
          await _userService.Delete(user);
          return StatusCode(200, "Успех");
       }
