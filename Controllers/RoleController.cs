@@ -2,6 +2,7 @@
 using BlogProject.Data;
 using BlogProject.Models;
 using BlogProject.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogProject.Controllers
@@ -17,6 +18,7 @@ namespace BlogProject.Controllers
          _logger = logger;
          _mapper = mapper;
       }
+      [Authorize(Roles = "admin")]
       [HttpPost]
       [Route("AddRole")]
       public async Task<IActionResult> AddRole(Role role)
@@ -24,6 +26,7 @@ namespace BlogProject.Controllers
          await _roleService.Create(role);
          return StatusCode(200, "Успех");
       }
+      [Authorize(Roles = "admin")]
       [HttpPost]
       [Route("AddAdminRoleToUser")]
       public async Task<IActionResult> AddAdminRoleToUser(Guid userId)
@@ -35,6 +38,7 @@ namespace BlogProject.Controllers
          await _roleService.Save(userId, adminRole.Id);
          return StatusCode(200, "Успех");
       }
+      [Authorize(Roles = "admin")]
       [HttpPost]
       [Route("AddModerRoleToUser")]
       public async Task<IActionResult> AddModerRoleToUser(Guid userId)
@@ -45,6 +49,14 @@ namespace BlogProject.Controllers
          var adminRole = await _roleService.GetRoleByName("moder");
          await _roleService.Save(userId, adminRole.Id);
          return StatusCode(200, "Успех");
+      }
+      [Authorize(Roles = "admin")]
+      [HttpGet]
+      [Route("GetRoleAdmin")]
+      public async Task<Role> GetRoleAdmin()
+      {
+         var role = await _roleService.GetRoleByName("admin");
+         return role;
       }
    }
 }

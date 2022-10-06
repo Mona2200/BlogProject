@@ -20,6 +20,19 @@ builder.Services.AddControllersWithViews();
 var assembly = Assembly.GetAssembly(typeof(MappingProfile));
 builder.Services.AddAutoMapper(assembly);
 
+builder.Services.AddAuthentication(opt => opt.DefaultScheme = "Cookies")
+.AddCookie("Cookies", opt =>
+{
+   opt.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
+   {
+      OnRedirectToLogin = redirectContext =>
+      {
+         redirectContext.HttpContext.Response.StatusCode = 401;
+         return Task.CompletedTask;
+      }
+   };
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,6 +48,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

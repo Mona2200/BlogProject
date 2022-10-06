@@ -2,8 +2,11 @@
 using BlogProject.Data;
 using BlogProject.Models;
 using BlogProject.ViewModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace BlogProject.Controllers
 {
@@ -51,6 +54,33 @@ namespace BlogProject.Controllers
          userViewModel.Roles = roles;
          return userViewModel;
       }
+      [HttpGet]
+      [Route("Authenticate")]
+      public async Task<IActionResult> Authenticate(string email, string password)
+      {
+         if (String.IsNullOrEmpty(email) || String.IsNullOrEmpty(password))
+            return BadRequest();
+         var user = await _userService.GetUserByEmail(email);
+         if (user == null)
+            return BadRequest("Пользователь не найден");
+         if (user.Password != password)
+            return BadRequest("Пароль не корректен");
+
+         var role = await _roleService.GetRoleByUserId(user.Id);
+
+         var claims = new List<Claim>
+            {
+            new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email)
+            };
+
+         for (int i = 0; i < role.Length; i++)
+            claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, role[i].Name));
+
+         var claimsIdentity = new ClaimsIdentity(claims, "AppCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+         
+         return Ok();
+      }
       [HttpPost]
       [Route("Register")]
       public async Task<IActionResult> Register(RegisterViewModel view)
@@ -67,7 +97,7 @@ namespace BlogProject.Controllers
       {
          var editUser = await _userService.GetUserById(id);
          if (editUser == null)
-            return StatusCode(200, "Не Успех");
+            return BadRequest();
          var newUser = _mapper.Map<RegisterViewModel, User>(view);
          await _userService.Update(editUser, newUser);
          return StatusCode(200, "Успех");
@@ -78,7 +108,7 @@ namespace BlogProject.Controllers
       {
          var user = await _userService.GetUserById(id);
          if (user == null)
-            return StatusCode(200, "Не Успех");
+            return BadRequest();
          await _roleService.Delete(user.Id);
          await _userService.Delete(user);
          return StatusCode(200, "Успех");

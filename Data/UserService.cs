@@ -20,6 +20,11 @@ namespace BlogProject.Data
          var user = await _db.User.Where(u => u.Id == id).FirstOrDefaultAsync();
          return user;
       }
+      public async Task<User> GetUserByEmail(string email)
+      {
+         var user = await _db.User.Where(u => u.Email == email).FirstOrDefaultAsync();
+         return user;
+      }
       public async Task Save(User user)
       {
          var entry = _db.Entry(user);
