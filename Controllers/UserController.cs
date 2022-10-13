@@ -4,8 +4,10 @@ using BlogProject.Models;
 using BlogProject.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 using System.Security.Claims;
 
 namespace BlogProject.Controllers
@@ -24,6 +26,7 @@ namespace BlogProject.Controllers
          _logger = logger;
          _mapper = mapper;
       }
+      [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetUsers")]
       public async Task<User[]> GetUsers()
@@ -31,6 +34,7 @@ namespace BlogProject.Controllers
          var users = await _userService.GetUsers();
          return users;
       }
+      [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetUserById")]
       public async Task<UserViewModel> GetUserById(Guid id)
@@ -89,19 +93,39 @@ namespace BlogProject.Controllers
          var role = await _roleService.GetRoleByName("user");
          await _roleService.Save(user.Id, role.Id);
          await _userService.Save(user);
-         return StatusCode(200, "Успех");
+         return Ok();
       }
+      [Authorize(Roles = "user")]
       [HttpPut]
       [Route("Edit")]
-      public async Task<IActionResult> Edit(Guid id, RegisterViewModel view)
+      public async Task<IActionResult> Edit(RegisterViewModel view)
       {
-         var editUser = await _userService.GetUserById(id);
+         ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
+         var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
+         var editUser = await _userService.GetUserByEmail(claimEmail);
+
          if (editUser == null)
             return BadRequest();
          var newUser = _mapper.Map<RegisterViewModel, User>(view);
          await _userService.Update(editUser, newUser);
-         return StatusCode(200, "Успех");
+         return Ok();
       }
+      [Authorize(Roles = "user")]
+      [HttpDelete]
+      [Route("DeleteUser")]
+      public async Task<IActionResult> DeleteUser()
+      {
+         ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
+         var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
+         var user = await _userService.GetUserByEmail(claimEmail);
+
+         if (user == null)
+            return BadRequest();
+         await _roleService.Delete(user.Id);
+         await _userService.Delete(user);
+         return Ok();
+      }
+      [Authorize(Roles = "admin")]
       [HttpDelete]
       [Route("DeleteUser")]
       public async Task<IActionResult> DeleteUser(Guid id)
@@ -111,7 +135,7 @@ namespace BlogProject.Controllers
             return BadRequest();
          await _roleService.Delete(user.Id);
          await _userService.Delete(user);
-         return StatusCode(200, "Успех");
+         return Ok();
       }
    }
 }

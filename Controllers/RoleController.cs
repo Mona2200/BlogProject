@@ -24,7 +24,7 @@ namespace BlogProject.Controllers
       public async Task<IActionResult> AddRole(Role role)
       {
          await _roleService.Create(role);
-         return StatusCode(200, "Успех");
+         return Ok();
       }
       [Authorize(Roles = "admin")]
       [HttpPost]
@@ -33,10 +33,15 @@ namespace BlogProject.Controllers
       {
          var user = _userService.GetUserById(userId);
          if (user == null)
-            return StatusCode(200, "Не Успех");
+            return BadRequest();
+
          var adminRole = await _roleService.GetRoleByName("admin");
          await _roleService.Save(userId, adminRole.Id);
-         return StatusCode(200, "Успех");
+
+         var moderRole = await _roleService.GetRoleByName("moder");
+         await _roleService.Save(userId, moderRole.Id);
+
+         return Ok();
       }
       [Authorize(Roles = "admin")]
       [HttpPost]
@@ -45,10 +50,10 @@ namespace BlogProject.Controllers
       {
          var user = _userService.GetUserById(userId);
          if (user == null)
-            return StatusCode(200, "Не Успех");
-         var adminRole = await _roleService.GetRoleByName("moder");
-         await _roleService.Save(userId, adminRole.Id);
-         return StatusCode(200, "Успех");
+            return BadRequest();
+         var moderRole = await _roleService.GetRoleByName("moder");
+         await _roleService.Save(userId, moderRole.Id);
+         return Ok();
       }
       [Authorize(Roles = "admin")]
       [HttpGet]
