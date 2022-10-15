@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using BlogProject.Data;
 using BlogProject.Models;
-using BlogProject.ViewModels;
+using BlogProject.ViewModels.Request;
+using BlogProject.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ using System.Security.Claims;
 
 namespace BlogProject.Controllers
 {
-   public class PostController : Controller
+    public class PostController : Controller
    {
       private readonly ILogger<PostController> _logger;
       private readonly IMapper _mapper;

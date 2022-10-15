@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using BlogProject.Data;
 using BlogProject.Models;
-using BlogProject.ViewModels;
+using BlogProject.ViewModels.Request;
+using BlogProject.ViewModels.Response;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,7 @@ using System.Security.Claims;
 
 namespace BlogProject.Controllers
 {
-   public class UserController : Controller
+    public class UserController : Controller
    {
       private readonly ILogger<UserController> _logger;
       private readonly IMapper _mapper;

@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using BlogProject.Data;
 using BlogProject.Models;
-using BlogProject.ViewModels;
+using BlogProject.ViewModels.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace BlogProject.Controllers
 {
-   public class CommentController : Controller
+    public class CommentController : Controller
    {
       private readonly ILogger<CommentController> _logger;
       private readonly IMapper _mapper;

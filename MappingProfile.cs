@@ -1,10 +1,11 @@
 ﻿using BlogProject.Models;
-using BlogProject.ViewModels;
 using AutoMapper;
+using BlogProject.ViewModels.Request;
+using BlogProject.ViewModels.Response;
 
 namespace BlogProject
 {
-   public class MappingProfile : Profile
+    public class MappingProfile : Profile
    {
       public MappingProfile()
       {

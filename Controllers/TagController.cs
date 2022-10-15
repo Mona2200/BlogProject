@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using BlogProject.Data;
 using BlogProject.Models;
-using BlogProject.ViewModels;
+using BlogProject.ViewModels.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 
 namespace BlogProject.Controllers
 {
-   public class TagController : Controller
+    public class TagController : Controller
    {
       private readonly ILogger<TagController> _logger;
       private readonly IMapper _mapper;
