@@ -61,14 +61,14 @@ namespace BlogProject.Controllers
       }
       [HttpGet]
       [Route("Authenticate")]
-      public async Task<IActionResult> Authenticate(string email, string password)
+      public async Task<IActionResult> Authenticate(LoginViewModel model)
       {
-         if (String.IsNullOrEmpty(email) || String.IsNullOrEmpty(password))
+         if (String.IsNullOrEmpty(model.Email) || String.IsNullOrEmpty(model.Password))
             return BadRequest();
-         var user = await _userService.GetUserByEmail(email);
+         var user = await _userService.GetUserByEmail(model.Email);
          if (user == null)
             return BadRequest("Пользователь не найден");
-         if (user.Password != password)
+         if (user.Password != model.Password)
             return BadRequest("Пароль не корректен");
 
          var role = await _roleService.GetRoleByUserId(user.Id);

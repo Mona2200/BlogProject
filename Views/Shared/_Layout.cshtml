@@ -16,25 +16,28 @@
 
                 <a class="col-md-2 navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/src/Icone.svg" alt="Блог" />BlogProject</a>
                 <div class="col-md-offset-5 col-md-5 collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Новости</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Пользователи</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Ваш блог</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Комментарии</a>
-                        </li>
+                    @if (Context.User.Identity.IsAuthenticated)
+                    {
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Новости</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Пользователи</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Ваш блог</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Комментарии</a>
+                            </li>
                         </ul>
-                    <ul class="navbar-nav flex-grow-1 justify-content-end">
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="" asp-action="">Выход</a>
-                        </li>
-                    </ul>
+                        <ul class="navbar-nav flex-grow-1 justify-content-end">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="" asp-action="">Выход</a>
+                            </li>
+                        </ul>
+                    }
                 </div>
             </div>
         </nav>
@@ -47,7 +50,7 @@
 
     <footer class="footer text-light text-center">
         <div class="container">
-            &copy; 2022 - BlogProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2022 - BlogProject - <a asp-area="" asp-controller="Home" asp-action="Privacy">Политика конфиденциальности</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
