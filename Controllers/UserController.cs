@@ -29,6 +29,13 @@ namespace BlogProject.Controllers
       }
       [Authorize(Roles = "user")]
       [HttpGet]
+      public IActionResult Main()
+      {
+         return View("Main");
+      }
+
+      [Authorize(Roles = "user")]
+      [HttpGet]
       [Route("GetUsers")]
       public async Task<User[]> GetUsers()
       {
@@ -59,33 +66,7 @@ namespace BlogProject.Controllers
          userViewModel.Roles = roles;
          return userViewModel;
       }
-      [HttpGet]
-      [Route("Authenticate")]
-      public async Task<IActionResult> Authenticate(LoginViewModel model)
-      {
-         if (String.IsNullOrEmpty(model.Email) || String.IsNullOrEmpty(model.Password))
-            return BadRequest();
-         var user = await _userService.GetUserByEmail(model.Email);
-         if (user == null)
-            return BadRequest("Пользователь не найден");
-         if (user.Password != model.Password)
-            return BadRequest("Пароль не корректен");
 
-         var role = await _roleService.GetRoleByUserId(user.Id);
-
-         var claims = new List<Claim>
-            {
-            new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email)
-            };
-
-         for (int i = 0; i < role.Length; i++)
-            claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, role[i].Name));
-
-         var claimsIdentity = new ClaimsIdentity(claims, "AppCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-         
-         return Ok();
-      }
       [HttpPost]
       [Route("Register")]
       public async Task<IActionResult> Register(RegisterViewModel view)
