@@ -87,6 +87,31 @@ body {
     background: url(../src/bg-block.svg) center no-repeat, url('../src/bg-img.svg') center no-repeat #E0E0E0;
 }
 
+.menu-bnt {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+}
+
+.menu-bnt:focus {
+    outline: none;
+}
+
+.hide {
+    display: none;
+}
+
+.modal-margin {
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.modal-height {
+    height: 100vh;
+}
+
 
 
 @media (min-width:320px) and (max-width : 991px) {
@@ -97,6 +122,7 @@ body {
     .menu-sm {
         display: flex;
     }
+
     .justify-content-menu {
         justify-content: end !important;
     }
