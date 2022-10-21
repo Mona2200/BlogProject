@@ -1,20 +1,20 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
 .bg-gray {
@@ -61,10 +61,11 @@ body {
     border-bottom: 1px white solid;
     color: white;
 }
-.input:focus {
-    outline: none;
-    border-bottom: 1px white solid;
-}
+
+    .input:focus {
+        outline: none;
+        border-bottom: 1px white solid;
+    }
 
 .authorize input::placeholder {
     color: white;
@@ -86,10 +87,38 @@ body {
     width: 50%;
 }
 
-.button:focus {
-    outline: none;
-}
+    .button:focus {
+        outline: none;
+    }
 
 .bg-block {
     background: url(../src/bg-block.svg) center no-repeat, url('../src/bg-img.svg') center no-repeat #E0E0E0;
+}
+
+
+
+@media (min-width:320px) and (max-width : 1223px) {
+    .menu-md {
+        display: none;
+    }
+
+    .menu-sm {
+        display: flex;
+    }
+    .justify-content-menu {
+        justify-content: end !important;
+    }
+}
+
+@media (min-width:1224px) {
+    .menu-md {
+        display: flex;
+    }
+
+    .menu-sm {
+        display: none;
+    }
+    .justify-content-menu {
+        justify-content: space-between !important;
+    }
 }

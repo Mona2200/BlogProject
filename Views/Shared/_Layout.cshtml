@@ -12,13 +12,13 @@
 <body class="bg-dark text-white">
     <header>
         <nav class="container navbar navbar-expand-sm navbar-toggleable-sm navbar-dark mb-3">
-            <div class="row container-fluid">
+            <div class="container-fluid justify-content-between flex-row">
 
-                <a class="col-md-2 navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/src/Icone.svg" alt="Блог" />BlogProject</a>
-                <div class="col-md-offset-5 col-md-5 collapse d-sm-inline-flex justify-content-between">
+                <a class="col-lg-2 col-md-2 navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/src/Icone.svg" alt="Блог" />BlogProject</a>
+                <div class="col-lg-offset-5 col-lg-5 col-md-offset-8 col-md-2 d-md-inline-flex justify-content-menu">
                     @if (Context.User.Identity.IsAuthenticated)
                     {
-                        <ul class="navbar-nav flex-grow-1">
+                        <ul class="navbar-nav flex-grow-1 menu-md">
                             <li class="nav-item">
                                 <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Новости</a>
                             </li>
@@ -32,11 +32,12 @@
                                 <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Комментарии</a>
                             </li>
                         </ul>
-                        <ul class="navbar-nav flex-grow-1 justify-content-end">
+                        <ul class="navbar-nav flex-grow-1 justify-content-end menu-md">
                             <li class="nav-item">
                                 <a class="nav-link text-white" asp-area="" asp-controller="" asp-action="">Выход</a>
                             </li>
                         </ul>
+                        <button class="menu-sm justify-content-end" action="">&#9776</button>
                     }
                 </div>
             </div>
