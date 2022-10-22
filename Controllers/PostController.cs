@@ -72,6 +72,13 @@ namespace BlogProject.Controllers
          return postViewModels;
       }
       [Authorize(Roles = "user")]
+      [HttpGet]
+      [Route("AddPost")]
+      public async Task<IActionResult> AddPost()
+      {
+         return View();
+      }
+      [Authorize(Roles = "user")]
       [HttpPost]
       [Route("AddPost")]
       public async Task<IActionResult> AddPost(Guid[] tagIds, AddPostViewModel view)

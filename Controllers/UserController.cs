@@ -29,9 +29,13 @@ namespace BlogProject.Controllers
       }
       [Authorize(Roles = "user")]
       [HttpGet]
-      public IActionResult Main()
+      public async Task<IActionResult> Main()
       {
-         return View("Main");
+         ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
+         var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
+         var user = await _userService.GetUserByEmail(claimEmail);
+         var userViewModel = await GetUserById(user.Id);
+         return View("Main", userViewModel);
       }
 
       [Authorize(Roles = "user")]

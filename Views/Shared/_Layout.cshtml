@@ -26,7 +26,7 @@
                                 <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Пользователи</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Ваш блог</a>
+                                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Блог</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Комментарии</a>
@@ -67,7 +67,7 @@
                             <a class="nav-link text-black" asp-area="" asp-controller="Home" asp-action="Index">Пользователи</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-black" asp-area="" asp-controller="Home" asp-action="Index">Ваш блог</a>
+                            <a class="nav-link text-black" asp-area="" asp-controller="Home" asp-action="Index">Блог</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-black" asp-area="" asp-controller="Home" asp-action="Privacy">Комментарии</a>
@@ -87,13 +87,5 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-
-    <script>
-        $(document).ready(function() {
-            $(".menu-sm").click(function () {
-                $(".modal-menu").modal('show')
-                });
-            });
-    </script>
 </body>
 </html>

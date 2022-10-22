@@ -48,7 +48,6 @@ body {
 
 .input {
     margin: auto;
-    width: 50%;
     text-align: center;
     border-bottom: 1px white solid;
     color: white;
@@ -72,11 +71,10 @@ body {
 }
 
 .button {
+    border: none;
     background-color: #96FFCD;
     border-radius: 10px;
     color: black;
-    margin: auto;
-    width: 50%;
 }
 
     .button:focus {
@@ -110,6 +108,15 @@ body {
 
 .modal-height {
     height: 100vh;
+}
+
+.post-block {
+    background-color: #495057;
+    border-radius: 30px;
+}
+
+.btnAddPost {
+    color: #96FFCD;
 }
 
 

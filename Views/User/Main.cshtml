@@ -1,5 +1,53 @@
-﻿@{
+﻿@using BlogProject.ViewModels.Response
+@using BlogProject.ViewModels.Request
+@model UserViewModel
+@{
     ViewData["Title"] = "Главная";
     Layout = "_Layout";
 }
-MAIN
+<div class="container">
+    <div class="row justify-content-lg-center">
+        <div class="col-lg-3">
+            <img src="https://3myhouse.com/upload/image/store/0.png" class="w-100" />
+            @if (Context.User.Identity.Name == Model.Email)
+            {
+                <div class="row justify-content-center m-3">
+                    <button class="button col-lg-10 p-2">Редактировать</button>
+                </div>
+            }
+        </div>
+        <div class="col-lg-3 m-2 d-flex flex-column justify-content-center">
+            <h3>@Model.FullName</h3>
+            <p>Пол: @Model.Sex</p>
+            <p>Email: @Model.Email</p>
+            @*@Model.Id*@
+        </div>
+    </div>
+
+    @if (Context.User.Identity.Name == Model.Email)
+    {
+        <form class="container mt-3" method="get" asp-controller="Post" asp-action="AddPost">
+           <div class="row justify-content-center">
+                <button class="button col-lg-3 p-2">Сделать публикацию</button>
+           </div>           
+       </form>
+    }
+
+    <div>
+
+        @if (Model.Posts.Length != 0)
+        {
+            @foreach (var post in Model.Posts)
+            {
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 post-block m-3">
+                        <div class="m-3">
+                            <h4 class="text-white">@post.Title</h4>
+                            <p class="text-white">@post.Content</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

@@ -13,11 +13,11 @@
             <div class="bg-gray w-55 p-10-auto-10-auto authorize-form">
                 <form class="authorize" method="get" asp-controller="Authenticate" asp-action="Index">
                     <h3 class="mb-5">Авторизация</h3>
-                    <p><input class="input form-control-plaintext" placeholder="Email" asp-for="Email"></p>
+                    <p><input class="input form-control-plaintext w-50" placeholder="Email" asp-for="Email"></p>
                     <span asp-validation-for="Email" class="text-danger"></span>
-                    <p><input class="input form-control-plaintext" placeholder="Пароль" asp-for="Password"></p>
+                    <p><input class="input form-control-plaintext w-50" placeholder="Пароль" asp-for="Password"></p>
                     <span asp-validation-for="Password" class="text-danger"></span>
-                    <p><button class="button form-control-plaintext mt-5">Войти</button></p>
+                    <p><button class="button form-control-plaintext m-auto mt-5 w-50">Войти</button></p>
                     <p class="small mb-0">Вы ещё не зарегестрированы?</p>
                     <p class="small"><a asp-controller="Home" asp-action="Register">Регистрация</a></p>
                 </form>

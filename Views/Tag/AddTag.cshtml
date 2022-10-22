@@ -1,0 +1,10 @@
+﻿@using BlogProject.ViewModels.Request
+@model AddTagViewModel
+
+<div>
+    <form>
+        <p class="w-100"><input class="input form-control-plaintext w-75" asp-for="Name" /></p>
+        <span asp-validation-for="Name" class="text-danger"></span>
+        <button class="col-lg-4 button h-50 m-auto">Добавить тег</button>
+    </form>
+</div>
