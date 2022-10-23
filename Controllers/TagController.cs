@@ -43,13 +43,27 @@ namespace BlogProject.Controllers
          return tags;
       }
       [Authorize(Roles = "user")]
+      [HttpGet]
+      [Route("AddTag")]
+      public async Task<IActionResult> AddTag(AddPostViewModel view)
+      {
+         var allTags = await GetTags();
+         var post = new FormPostViewModel();
+         post.Post = view;
+         post.AllTags = allTags;
+         return View(post);
+      }
+      [Authorize(Roles = "user")]
       [HttpPost]
       [Route("AddTag")]
-      public async Task<IActionResult> AddTag(AddTagViewModel view)
+      public async Task<IActionResult> AddTag(FormPostViewModel model)
       {
+         var view = model.AddTag;
          var tag = _mapper.Map<AddTagViewModel, Tag>(view);
          await _tagService.Save(tag);
-         return Ok();
+         var allTags = await GetTags();
+         model.AllTags = allTags;
+         return View(model);
       }
       [Authorize(Roles = "moder")]
       [HttpPut]

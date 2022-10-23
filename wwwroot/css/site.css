@@ -48,8 +48,13 @@ body {
 
 .input {
     margin: auto;
-    text-align: center;
     border-bottom: 1px white solid;
+    color: white;
+}
+
+.textarea {
+    margin: auto;
+    border: 1px white solid;
     color: white;
 }
 
@@ -75,6 +80,7 @@ body {
     background-color: #96FFCD;
     border-radius: 10px;
     color: black;
+    cursor: pointer;
 }
 
     .button:focus {

@@ -81,8 +81,11 @@ namespace BlogProject.Controllers
       [Authorize(Roles = "user")]
       [HttpPost]
       [Route("AddPost")]
-      public async Task<IActionResult> AddPost(Guid[] tagIds, AddPostViewModel view)
+      public async Task<IActionResult> AddPost(FormPostViewModel model)
       {
+         var view = model.Post;
+
+         Guid[] tagIds = model.TagIds.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)).ToArray();
          ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
          var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
          var user = await _userService.GetUserByEmail(claimEmail);
@@ -96,7 +99,7 @@ namespace BlogProject.Controllers
       [Authorize(Roles = "user")]
       [HttpPut]
       [Route("EditPost")]
-      public async Task<IActionResult> EditPost(Guid id, Guid[] tagIds, AddPostViewModel view)
+      public async Task<IActionResult> EditPost(Guid id, Guid[] TagIds, AddPostViewModel view)
       {
          ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
          var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
@@ -110,7 +113,7 @@ namespace BlogProject.Controllers
             if (editPost == null)
                return BadRequest();
             var newPost = _mapper.Map<AddPostViewModel, Post>(view);
-            await _postService.Update(editPost, newPost, tagIds);
+            await _postService.Update(editPost, newPost, TagIds);
             return Ok();
          }
          return BadRequest();

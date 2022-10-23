@@ -2,8 +2,20 @@
     $(".menu-sm").click(function () {
         $(".modal-menu").modal('show')
     });
-
-    $(".btnAddPost").click(function () {
-        /*$("#tags").*/
+    $("#btnAddNew").click(function () {
+        $("#AddFormsTags").show();
+        $("#btnAddNew").hide();
+    });
+    $("#ExistsTags>p>input[type=checkbox]").change(function () {
+        if ($(this).is(':checked')) {
+            var data = $("#Tags").val();
+            $("#Tags").val(data + $(this).val() + ' ');
+        }
+        else {
+            var data = $("#Tags").val();
+            var newdata = data.replace($(this).val(), '');
+            console.log(newdata);
+            $("#Tags").val(newdata);
+        }
     });
 });
