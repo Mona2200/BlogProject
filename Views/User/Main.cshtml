@@ -7,7 +7,7 @@
 }
 <div class="container">
     <div class="row justify-content-lg-center">
-        <div class="col-lg-3">
+        <div class="col-lg-3 col-md-4 col-sm-4 col-6">
             <img src="https://3myhouse.com/upload/image/store/0.png" class="w-100" />
             @if (Context.User.Identity.Name == Model.Email)
             {
@@ -40,7 +40,7 @@
             @foreach (var post in Model.Posts)
             {
                 <div class="row justify-content-center">
-                    <div class="col-lg-8 post-block m-3">
+                    <div class="col-lg-8 post-block m-3 parentComm">
                         <div class="m-3">
                             <h4 class="text-white">@post.Title</h4>
                             <p class="text-white">@post.Content</p>
@@ -50,19 +50,27 @@
                                     <span class="tag m-1 p-1">@tag.Name</span>
                                 }
                             </p>
+                            <div class="d-flex justify-content-end">
+                                <span class="btnComm position-absolute color-main fs-1 translateY-100 pointer">&crarr;</span>
+                               </div>
                         </div>
                     </div>
-                    <div class="comments">
+                    <div class="hide hideComm">
+                    <div class="comments container">
                        @foreach(var comment in post.Comments)
                        {
-                          <div>
-                             <p>@comment.User.FirstName</p>
+                          <div class="row flex-row-reverse">
+                          <div class="col-lg-6 text-end border-1 border-white p-2 br-20 mt-1 m-lg-4 m-md-2 m-sm-0">
+                             <p class="fw-bold">@comment.User.FirstName</p>
                              <p>@comment.Content</p>
                              </div>
+                             </div>
                        }
-                       <div>
-                            <a formmethod="get" asp-controller="Comment" asp-action="AddComment" asp-route-postId="@post.Id">Добавить комментарий</a>
-                          </div>
+
+                    </div>
+                        <div class="d-flex justify-content-center">
+                            <a class="button p-2 text-center focus-outline-none m-2" formmethod="get" asp-controller="Comment" asp-action="AddComment" asp-route-postId="@post.Id">Добавить комментарий</a>
+                        </div>
                     </div>
                 </div>
             }

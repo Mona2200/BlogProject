@@ -143,6 +143,15 @@ body {
     cursor: pointer;
 }
 
+.br-20 {
+    border: 1px solid white;
+    border-radius: 20px;
+}
+
+.focus-outline-none:active, .focus-outline-none:hover, .focus-outline-none {
+    text-decoration: none;
+    color: black;
+}
 
 
 @media (min-width:320px) and (max-width : 991px) {

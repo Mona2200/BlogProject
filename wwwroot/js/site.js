@@ -20,4 +20,7 @@
             $("#TagsHide").val(newdata);
         }
     });
+    $(".btnComm").click(function () {
+        $(this).parents(".parentComm").next(".hideComm").toggle();
+    });
 });
