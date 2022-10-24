@@ -50,7 +50,6 @@
                                     <span class="tag m-1 p-1">@tag.Name</span>
                                 }
                             </p>
-                            <div class="d-flex justify-content-end"><span class="fs-1 col position-absolute translateY-100 color-main pointer comm">&crarr;</span></div>
                         </div>
                     </div>
                     <div class="comments">
@@ -61,6 +60,9 @@
                              <p>@comment.Content</p>
                              </div>
                        }
+                       <div>
+                            <a formmethod="get" asp-controller="Comment" asp-action="AddComment" asp-route-postId="@post.Id">Добавить комментарий</a>
+                          </div>
                     </div>
                 </div>
             }

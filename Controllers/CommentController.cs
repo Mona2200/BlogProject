@@ -2,6 +2,7 @@
 using BlogProject.Data;
 using BlogProject.Models;
 using BlogProject.ViewModels.Request;
+using BlogProject.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -14,6 +15,8 @@ namespace BlogProject.Controllers
       private readonly IMapper _mapper;
       private readonly UserService _userService = new UserService();
       private readonly CommentService _commentService = new CommentService();
+      private readonly PostService _postService = new PostService();
+      private readonly TagService _tagService = new TagService();
       public CommentController(ILogger<CommentController> logger, IMapper mapper)
       {
          _logger = logger;
@@ -36,10 +39,41 @@ namespace BlogProject.Controllers
          return comment;
       }
       [Authorize(Roles = "user")]
+      [HttpGet]
+      [Route("AddComment")]
+      public async Task<IActionResult> AddComment(Guid postId)
+      {
+         var comment = new AddCommentViewModel();
+         var post = await _postService.GetPostById(postId);
+         var tags = await _tagService.GetTagByPostId(postId);
+
+         var comments = await _commentService.GetCommentByPostId(post.Id);
+         var commentsViewModels = new CommentViewModel[comments.Length];
+         var j = 0;
+         foreach (var comm in comments)
+         {
+            commentsViewModels[j] = new CommentViewModel();
+            commentsViewModels[j].Post = post;
+            commentsViewModels[j].User = await _userService.GetUserById(comm.UserId);
+            commentsViewModels[j].Content = comm.Content;
+            j++;
+         }
+
+         var postViewModel = new PostViewModel();
+         postViewModel.Id = postId;
+         postViewModel.Title = post.Title;
+         postViewModel.Content = post.Content;
+         postViewModel.Tags = tags;
+         postViewModel.Comments = commentsViewModels;
+         comment.Post = postViewModel;
+         return View(comment);
+      }
+      [Authorize(Roles = "user")]
       [HttpPost]
       [Route("AddComment")]
-      public async Task<IActionResult> AddComment(Guid postId, AddCommentViewModel view)
+      public async Task<IActionResult> AddComment(AddCommentViewModel view)
       {
+         var postId = view.Post.Id;
          ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
          var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
          var user = await _userService.GetUserByEmail(claimEmail);
@@ -49,7 +83,7 @@ namespace BlogProject.Controllers
          comment.UserId = userId;
          comment.PostId = postId;
          await _commentService.Save(comment);
-         return Ok();
+         return RedirectToAction("AddComment", "Comment", new { postId = postId });
       }
       [Authorize(Roles = "user")]
       [HttpPut]

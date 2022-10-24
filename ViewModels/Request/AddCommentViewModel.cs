@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BlogProject.ViewModels.Response;
+using System.ComponentModel.DataAnnotations;
 
 namespace BlogProject.ViewModels.Request
 {
@@ -7,5 +8,6 @@ namespace BlogProject.ViewModels.Request
         [Required]
         [DataType(DataType.Text)]
         public string Content { get; set; }
-    }
+      public PostViewModel Post { get; set; }
+   }
 }

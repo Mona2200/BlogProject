@@ -67,10 +67,11 @@ namespace BlogProject.Controllers
             var j = 0;
             foreach (var comment in comments)
             {
-               
+               commentsViewModels[j] = new CommentViewModel();
                commentsViewModels[j].Post = post;
                commentsViewModels[j].User = user;
                commentsViewModels[j].Content = comment.Content;
+               j++;
             }
             postViewModels[i].Comments = commentsViewModels;
             i++;
