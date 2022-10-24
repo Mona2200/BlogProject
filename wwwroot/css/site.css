@@ -83,9 +83,19 @@ body {
     cursor: pointer;
 }
 
-    .button:focus {
-        outline: none;
-    }
+.tag {
+    background-color: #96FFCD;
+    border-radius: 5px;
+    color: black;
+}
+
+.color-main {
+    color: #96FFCD;
+}
+
+.button:focus {
+    outline: none;
+}
 
 .bg-block {
     background: url(../src/bg-block.svg) center no-repeat, url('../src/bg-img.svg') center no-repeat #E0E0E0;
@@ -123,6 +133,10 @@ body {
 
 .btnAddPost {
     color: #96FFCD;
+}
+
+.translateY-100 {
+    transform: translateY(-100%);
 }
 
 

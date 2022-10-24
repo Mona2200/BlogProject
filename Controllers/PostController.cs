@@ -94,7 +94,7 @@ namespace BlogProject.Controllers
          var post = _mapper.Map<AddPostViewModel, Post>(view);
          post.UserId = userId;
          await _postService.Save(post, tagIds);
-         return Ok();
+         return RedirectToAction("Main", "User");
       }
       [Authorize(Roles = "user")]
       [HttpPut]

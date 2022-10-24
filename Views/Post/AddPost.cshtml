@@ -1,13 +1,18 @@
 ﻿@using BlogProject.ViewModels.Request
 @model AddPostViewModel
 
+@{
+    ViewData["Title"] = "Создание публикации";
+    Layout = "_Layout";
+}
+
 
 <h1 class="text-white text-center">Создание публикации</h1>
 <div class="row justify-content-center">
-    <form class="col-lg-8 m-3 d-flex flex-column justify-content-center" method="get" asp-controller="Tag" asp-action="AddTag">
-        <p class="w-100"><input class="input text-center form-control-plaintext w-75" asp-for="Title" /></p>
+    <form class="col-lg-8 m-3 d-flex flex-column justify-content-center" method="post" asp-controller="Tag" asp-action="Form">
+        <p class="w-100"><input class="input text-center form-control-plaintext w-75" asp-for="Title" placeholder="Название публикации"/></p>
         <span asp-validation-for="Title" class="text-danger"></span>
-        <p class="w-100"><textarea class="textarea form-control-plaintext w-75" asp-for="Content" rows="8"></textarea></p>
+        <p class="w-100"><textarea class="textarea form-control-plaintext w-75" asp-for="Content" rows="8" placeholder="Содержание публикации"></textarea></p>
         <span asp-validation-for="Content" class="text-danger"></span>
         <button class="col-lg-4 col-md-6 col-sm-12 col-12 button p-2 m-auto mt-5">Далее</button>
     </form>

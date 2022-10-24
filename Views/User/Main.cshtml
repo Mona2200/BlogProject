@@ -44,6 +44,13 @@
                         <div class="m-3">
                             <h4 class="text-white">@post.Title</h4>
                             <p class="text-white">@post.Content</p>
+                            <p class="w-75">
+                               @foreach (var tag in post.Tags)
+                               {
+                                  <span class="tag m-1 p-1">@tag.Name</span>
+                               }
+                            </p>
+                            <div class="d-flex justify-content-end"><span class="fs-1 col position-absolute translateY-100 color-main">&crarr;</span></div>
                         </div>
                     </div>
                 </div>
