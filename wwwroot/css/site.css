@@ -139,6 +139,10 @@ body {
     transform: translateY(-100%);
 }
 
+.pointer {
+    cursor: pointer;
+}
+
 
 
 @media (min-width:320px) and (max-width : 991px) {

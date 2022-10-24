@@ -9,7 +9,8 @@ namespace BlogProject.ViewModels.Response
         public Guid Id { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
+        public User User { get; set; }
         public Tag[] Tags { get; set; }
-        public Comment[] Comments { get; set; }
+        public CommentViewModel[] Comments { get; set; }
     }
 }

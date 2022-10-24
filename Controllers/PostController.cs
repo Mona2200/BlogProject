@@ -36,7 +36,19 @@ namespace BlogProject.Controllers
          {
             postViewModels[i] = _mapper.Map<Post, PostViewModel>(post);
             postViewModels[i].Tags = await _tagService.GetTagByPostId(post.Id);
-            postViewModels[i].Comments = await _commentService.GetCommentByPostId(post.Id);
+
+            var comments = await _commentService.GetCommentByPostId(post.Id);
+            var commentsViewModels = new CommentViewModel[comments.Length];
+            var j = 0;
+            foreach (var comment in comments)
+            {
+
+               commentsViewModels[j].Post = post;
+               commentsViewModels[j].User = await _userService.GetUserById(comment.UserId);
+               commentsViewModels[j].Content = comment.Content;
+            }
+            postViewModels[i].Comments = commentsViewModels;
+
             i++;
          }
          return postViewModels;
@@ -51,7 +63,19 @@ namespace BlogProject.Controllers
             return null;
          var postViewModel = _mapper.Map<Post, PostViewModel>(post);
          postViewModel.Tags = await _tagService.GetTagByPostId(post.Id);
-         postViewModel.Comments = await _commentService.GetCommentByPostId(post.Id);
+
+         var comments = await _commentService.GetCommentByPostId(post.Id);
+         var commentsViewModels = new CommentViewModel[comments.Length];
+         var j = 0;
+         foreach (var comment in comments)
+         {
+
+            commentsViewModels[j].Post = post;
+            commentsViewModels[j].User = await _userService.GetUserById(comment.UserId);
+            commentsViewModels[j].Content = comment.Content;
+         }
+
+         postViewModel.Comments = commentsViewModels;
          return postViewModel;
       }
       [Authorize(Roles = "user")]
@@ -66,7 +90,19 @@ namespace BlogProject.Controllers
          {
             postViewModels[i] = _mapper.Map<Post, PostViewModel>(post);
             postViewModels[i].Tags = await _tagService.GetTagByPostId(post.Id);
-            postViewModels[i].Comments = await _commentService.GetCommentByPostId(post.Id);
+
+            var comments = await _commentService.GetCommentByPostId(post.Id);
+            var commentsViewModels = new CommentViewModel[comments.Length];
+            var j = 0;
+            foreach (var comment in comments)
+            {
+
+               commentsViewModels[j].Post = post;
+               commentsViewModels[j].User = await _userService.GetUserById(comment.UserId);
+               commentsViewModels[j].Content = comment.Content;
+            }
+            postViewModels[i].Comments = commentsViewModels;
+
             i++;
          }
          return postViewModels;

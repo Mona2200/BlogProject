@@ -27,10 +27,10 @@
     @if (Context.User.Identity.Name == Model.Email)
     {
         <form class="container mt-3" method="get" asp-controller="Post" asp-action="AddPost">
-           <div class="row justify-content-center">
+            <div class="row justify-content-center">
                 <button class="button col-lg-3 p-2">Сделать публикацию</button>
-           </div>           
-       </form>
+            </div>
+        </form>
     }
 
     <div>
@@ -45,13 +45,22 @@
                             <h4 class="text-white">@post.Title</h4>
                             <p class="text-white">@post.Content</p>
                             <p class="w-75">
-                               @foreach (var tag in post.Tags)
-                               {
-                                  <span class="tag m-1 p-1">@tag.Name</span>
-                               }
+                                @foreach (var tag in post.Tags)
+                                {
+                                    <span class="tag m-1 p-1">@tag.Name</span>
+                                }
                             </p>
-                            <div class="d-flex justify-content-end"><span class="fs-1 col position-absolute translateY-100 color-main">&crarr;</span></div>
+                            <div class="d-flex justify-content-end"><span class="fs-1 col position-absolute translateY-100 color-main pointer comm">&crarr;</span></div>
                         </div>
+                    </div>
+                    <div class="comments">
+                       @foreach(var comment in post.Comments)
+                       {
+                          <div>
+                             <p>@comment.User.FirstName</p>
+                             <p>@comment.Content</p>
+                             </div>
+                       }
                     </div>
                 </div>
             }
