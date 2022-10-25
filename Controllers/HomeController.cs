@@ -54,6 +54,7 @@ namespace BlogProject.Controllers
 
          if (user.Password != model.Password)
          {
+            ModelState.AddModelError("Password", "Неверный пароль");
             return View("Index");
          }
 

@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace BlogProject.Controllers
 {
-    public class PostController : Controller
+   public class PostController : Controller
    {
       private readonly ILogger<PostController> _logger;
       private readonly IMapper _mapper;
@@ -119,18 +119,27 @@ namespace BlogProject.Controllers
       [Route("AddPost")]
       public async Task<IActionResult> AddPost(FormPostViewModel model)
       {
-         var view = model.Post;
+         if (ModelState.IsValid)
+         {
+            var view = model.Post;
 
-         Guid[] tagIds = model.TagIds.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)).ToArray();
-         ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
-         var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
-         var user = await _userService.GetUserByEmail(claimEmail);
-         var userId = user.Id;
+            Guid[] tagIds = model.TagIds.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)).ToArray();
 
-         var post = _mapper.Map<AddPostViewModel, Post>(view);
-         post.UserId = userId;
-         await _postService.Save(post, tagIds);
-         return RedirectToAction("Main", "User");
+            ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
+            var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
+            var user = await _userService.GetUserByEmail(claimEmail);
+            var userId = user.Id;
+
+            var post = _mapper.Map<AddPostViewModel, Post>(view);
+            post.UserId = userId;
+            await _postService.Save(post, tagIds);
+            return RedirectToAction("Main", "User");
+         }
+         else
+         {
+            return View();
+         }
+
       }
       [Authorize(Roles = "user")]
       [HttpPut]
