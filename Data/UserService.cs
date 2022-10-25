@@ -38,7 +38,8 @@ namespace BlogProject.Data
          updateUser.LastName = newUser.LastName;
          updateUser.Sex = newUser.Sex;
          updateUser.Email = newUser.Email;
-         updateUser.Password = newUser.Password;
+         if (!String.IsNullOrEmpty(newUser.Password))
+            updateUser.Password = newUser.Password;
          var entry = _db.Entry(updateUser);
          if (entry.State == EntityState.Detached)
             _db.User.Update(updateUser);

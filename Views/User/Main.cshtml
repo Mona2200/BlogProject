@@ -11,16 +11,15 @@
             <img src="https://3myhouse.com/upload/image/store/0.png" class="w-100" />
             @if (Context.User.Identity.Name == Model.Email)
             {
-                <div class="row justify-content-center m-3">
+                <form class="row justify-content-center m-3" method="get" asp-controller="User" asp-action="Edit">
                     <button class="button col-lg-10 p-2">Редактировать</button>
-                </div>
+                </form>
             }
         </div>
         <div class="col-lg-3 m-2 d-flex flex-column justify-content-center">
             <h3>@Model.FullName</h3>
             <p>Пол: @Model.Sex</p>
             <p>Email: @Model.Email</p>
-            @*@Model.Id*@
         </div>
     </div>
 

@@ -35,7 +35,7 @@ namespace BlogProject.ViewModels.Request
         public string Password { get; set; }
 
         [Required]
-        [Compare("PasswordReg", ErrorMessage = "Пароли не совпадают")]
+        [Compare("Password", ErrorMessage = "Пароли не совпадают")]
         [DataType(DataType.Password)]
         [Display(Name = "Подтвердить пароль")]
         public string PasswordConfirm { get; set; }

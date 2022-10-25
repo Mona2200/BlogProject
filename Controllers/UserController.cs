@@ -93,7 +93,21 @@ namespace BlogProject.Controllers
          return Ok();
       }
       [Authorize(Roles = "user")]
-      [HttpPut]
+      [HttpGet]
+      [Route("Edit")]
+      public async Task<IActionResult> Edit()
+      {
+         ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
+         var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
+         var editUser = await _userService.GetUserByEmail(claimEmail);
+
+         if (editUser == null)
+            return BadRequest();
+         var user = _mapper.Map<User, RegisterViewModel>(editUser);
+         return View(user);
+      }
+      [Authorize(Roles = "user")]
+      [HttpPost]
       [Route("Edit")]
       public async Task<IActionResult> Edit(RegisterViewModel view)
       {
@@ -105,7 +119,17 @@ namespace BlogProject.Controllers
             return BadRequest();
          var newUser = _mapper.Map<RegisterViewModel, User>(view);
          await _userService.Update(editUser, newUser);
-         return Ok();
+
+         var oldClaimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name);
+         ident.RemoveClaim(oldClaimEmail);
+
+         var newClaimEmail = new Claim(ClaimsIdentity.DefaultNameClaimType, newUser.Email);
+
+         ident.AddClaim(newClaimEmail);
+         var claimsIdentity = new ClaimsIdentity(ident.Claims, "AppCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+         return RedirectToRoute(new { controller = "User", action = "Main" });
       }
       [Authorize(Roles = "user")]
       [HttpDelete]

@@ -16,6 +16,7 @@ namespace BlogProject
 
          CreateMap<User, UserViewModel>().ForMember(m => m.FullName, opt => opt.MapFrom(u => $"{u.FirstName} {u.LastName}"));
          CreateMap<Post, PostViewModel>();
+         CreateMap<User, RegisterViewModel>().ForMember(m => m.PasswordConfirm, opt => opt.MapFrom(u => u.Password));
       }
    }
 }
