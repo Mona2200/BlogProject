@@ -22,19 +22,19 @@
                 <div class="comments">
                     @foreach (var comment in Model.Post.Comments)
                     {
-                        <div>
-                            <p>@comment.User.FirstName</p>
-                            <p>@comment.Content</p>
+                        <div class="row flex-row-reverse">
+                            <div class="col-lg-6 text-end border-1 border-white p-2 br-20 mt-1 m-lg-4 m-md-2 m-sm-0">
+                                <p class="fw-bold">@comment.User.FirstName</p>
+                                <p>@comment.Content</p>
+                            </div>
                         </div>
                     }
-                    <div>
-            </div>
-        </div>
-        <input class="d-none" asp-for="@Model.Post.Id" value="@Model.Post.Id" readonly />
-        <p class="w-100"><input class="input text-center form-control-plaintext w-75" asp-for="@Model.Content" placeholder="Ваш комментарий" /></p>
-        <span asp-validation-for="@Model.Content" class="text-danger"></span>
-        <div class="row">
-            <button class="col-lg-2 col-md-6 col-sm-10 button m-auto p-2 mt-3 mb-3">Опубликовать</button>
-        </div>
+                </div>
+                <input class="d-none" asp-for="@Model.Post.Id" value="@Model.Post.Id" readonly />
+                <p class="w-100"><input class="input text-center form-control-plaintext w-75" asp-for="@Model.Content" placeholder="Ваш комментарий" /></p>
+                <span asp-validation-for="@Model.Content" class="text-danger"></span>
+                <div class="row">
+                    <button class="col-lg-2 col-md-6 col-sm-10 button m-auto p-2 mt-3 mb-3">Опубликовать</button>
+                </div>
     </form>
 </div>
