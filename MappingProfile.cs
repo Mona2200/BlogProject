@@ -11,6 +11,7 @@ namespace BlogProject
       {
          CreateMap<RegisterViewModel, User>();
          CreateMap<AddPostViewModel, Post>();
+         CreateMap<PostViewModel, Post>();
          CreateMap<AddCommentViewModel, Comment>();
          CreateMap<AddTagViewModel, Tag>();
 

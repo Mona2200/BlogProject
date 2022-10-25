@@ -6,6 +6,7 @@ using BlogProject.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Data;
 using System.Security.Claims;
 
@@ -119,32 +120,58 @@ namespace BlogProject.Controllers
       [Route("AddPost")]
       public async Task<IActionResult> AddPost(FormPostViewModel model)
       {
-         if (ModelState.IsValid)
-         {
-            var view = model.Post;
+         var view = model.Post;
 
-            Guid[] tagIds = model.TagIds.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)).ToArray();
+         Guid[] tagIds = model.TagIds.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(x => Guid.Parse(x)).ToArray();
 
-            ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
-            var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
-            var user = await _userService.GetUserByEmail(claimEmail);
-            var userId = user.Id;
+         ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
+         var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
+         var user = await _userService.GetUserByEmail(claimEmail);
+         var userId = user.Id;
 
-            var post = _mapper.Map<AddPostViewModel, Post>(view);
-            post.UserId = userId;
-            await _postService.Save(post, tagIds);
-            return RedirectToAction("Main", "User");
-         }
-         else
-         {
-            return View();
-         }
-
+         var post = _mapper.Map<AddPostViewModel, Post>(view);
+         post.UserId = userId;
+         await _postService.Save(post, tagIds);
+         return RedirectToAction("Main", "User");
       }
       [Authorize(Roles = "user")]
-      [HttpPut]
+      [HttpGet]
       [Route("EditPost")]
-      public async Task<IActionResult> EditPost(Guid id, Guid[] TagIds, AddPostViewModel view)
+      public async Task<IActionResult> EditPost(Guid postId)
+      {
+         var modelPost = await _postService.GetPostById(postId);
+
+         ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
+         var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
+         var user = await _userService.GetUserByEmail(claimEmail);
+         var tryUser = await _userService.GetUserById(modelPost.UserId);
+
+         if (user == tryUser)
+         {
+            var post = new FormPostViewModel();
+            post.Post = new AddPostViewModel();
+
+            post.postId = modelPost.Id;
+            post.Post.Title = modelPost.Title;
+            post.Post.Content = modelPost.Content;
+            post.AllTags = await _tagService.GetTags();
+
+            var tagsPost = await _tagService.GetTagByPostId(modelPost.Id);
+
+            foreach (var tag in tagsPost.Select(t => t.Id).ToArray())
+            {
+               post.TagIds += tag + " ";
+            }
+
+            return View(post);
+         }
+         else
+            return RedirectToAction("Main", "User");
+      }
+      [Authorize(Roles = "user")]
+      [HttpPost]
+      [Route("EditPost")]
+      public async Task<IActionResult> EditPost(/*Guid id, Guid[] TagIds, AddPostViewModel view*/FormPostViewModel model)
       {
          ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
          var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
@@ -152,14 +179,17 @@ namespace BlogProject.Controllers
          var user = await _userService.GetUserByEmail(claimEmail);
          var userPosts = await _postService.GetPostByUserId(user.Id);
 
-         if (userPosts.FirstOrDefault(p => p.Id == id) != null || claimRoles.FirstOrDefault(r => r.Value == "moder") != null)
+         if (userPosts.FirstOrDefault(p => p.Id == model.postId) != null)
          {
-            var editPost = await _postService.GetPostById(id);
+            var editPost = await _postService.GetPostById(model.postId);
             if (editPost == null)
                return BadRequest();
-            var newPost = _mapper.Map<AddPostViewModel, Post>(view);
-            await _postService.Update(editPost, newPost, TagIds);
-            return Ok();
+            var newPost = _mapper.Map<AddPostViewModel, Post>(model.Post);
+
+            Guid[] tagIds = model.TagIds.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(t => Guid.Parse(t)).ToArray();
+
+            await _postService.Update(editPost, newPost, tagIds);
+            return RedirectToAction("Main", "User");
          }
          return BadRequest();
       }

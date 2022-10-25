@@ -50,7 +50,13 @@
                                 }
                             </p>
                             <div class="d-flex justify-content-end">
-                                <span class="btnComm position-absolute color-main fs-1 translateY-100 pointer">&crarr;</span>
+                                <p class="position-absolute color-main translateY-100">
+                                    @if (Context.User.Identity.Name == Model.Email)
+                                    {
+                                        <a class="pointer fs-3 focus-outline-none color-main" asp-route-postId="@post.Id" asp-controller="Post" asp-action="EditPost">&#9998;</a>
+                                    }
+                                    <span class="btnComm pointer fs-1">&crarr;</span>
+                                </p>
                             </div>
                         </div>
                     </div>

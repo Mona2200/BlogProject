@@ -90,7 +90,7 @@ body {
 }
 
 .color-main {
-    color: #96FFCD;
+    color: #96FFCD !important;
 }
 
 .button:focus {
