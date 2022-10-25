@@ -23,4 +23,12 @@
     $(".btnComm").click(function () {
         $(this).parents(".parentComm").next(".hideComm").toggle();
     });
+
+    $("#linkRemove").click(function () {
+        $("#modalAgreement").modal('show')
+    });
+
+    $("#closeModalAgreement").click(function () {
+        $("#modalAgreement").modal('hide')
+    });
 });

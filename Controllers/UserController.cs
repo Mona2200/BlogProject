@@ -144,7 +144,10 @@ namespace BlogProject.Controllers
             return BadRequest();
          await _roleService.Delete(user.Id);
          await _userService.Delete(user);
-         return Ok();
+
+         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+         return RedirectToAction("Index", "Home");
       }
       [Authorize(Roles = "admin")]
       [HttpDelete]
