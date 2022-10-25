@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Identity;
 
 namespace BlogProject.Controllers
 {
@@ -70,6 +71,14 @@ namespace BlogProject.Controllers
          await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
          return RedirectToRoute(new { controller = "User", action = "Main" });
+      }
+
+      [HttpGet]
+      [Route("Logout")]
+      public async Task<IActionResult> Logout()
+      {
+         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+         return RedirectToAction("Index", "Home");
       }
 
       public IActionResult Privacy()
