@@ -194,7 +194,7 @@ namespace BlogProject.Controllers
          return BadRequest();
       }
       [Authorize(Roles = "user")]
-      [HttpDelete]
+      [HttpGet]
       [Route("DeletePost")]
       public async Task<IActionResult> DeletePost(Guid id)
       {
@@ -210,7 +210,7 @@ namespace BlogProject.Controllers
             if (post == null)
                return BadRequest();
             await _postService.Delete(post);
-            return Ok();
+            return RedirectToAction("Main", "User");
          }
          return BadRequest();
       }
