@@ -35,7 +35,15 @@ namespace BlogProject.Controllers
          var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
          var user = await _userService.GetUserByEmail(claimEmail);
          var userViewModel = await GetUserById(user.Id);
-         return View("Main", userViewModel);
+         return View(userViewModel);
+      }
+
+      [Authorize(Roles = "user")]
+      [HttpGet]
+      public async Task<IActionResult> MainUser(Guid userId)
+      {
+            var userViewModel = await GetUserById(userId);
+            return View("Main", userViewModel);
       }
 
       [Authorize(Roles = "user")]
@@ -69,7 +77,8 @@ namespace BlogProject.Controllers
             {
                commentsViewModels[j] = new CommentViewModel();
                commentsViewModels[j].Post = post;
-               commentsViewModels[j].User = user;
+               var commentUser = await _userService.GetUserById(comment.UserId);
+               commentsViewModels[j].User = commentUser;
                commentsViewModels[j].Content = comment.Content;
                j++;
             }

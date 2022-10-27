@@ -47,6 +47,7 @@ namespace BlogProject.Controllers
                commentsViewModels[j].Post = post;
                commentsViewModels[j].User = await _userService.GetUserById(comment.UserId);
                commentsViewModels[j].Content = comment.Content;
+               j++;
             }
             postViewModels[i].Comments = commentsViewModels;
             postViewModels[i].User = await _userService.GetUserById(post.UserId);
@@ -78,6 +79,7 @@ namespace BlogProject.Controllers
             commentsViewModels[j].Post = post;
             commentsViewModels[j].User = await _userService.GetUserById(comment.UserId);
             commentsViewModels[j].Content = comment.Content;
+            j++;
          }
 
          postViewModel.Comments = commentsViewModels;
@@ -105,6 +107,7 @@ namespace BlogProject.Controllers
                commentsViewModels[j].Post = post;
                commentsViewModels[j].User = await _userService.GetUserById(comment.UserId);
                commentsViewModels[j].Content = comment.Content;
+               j++;
             }
             postViewModels[i].Comments = commentsViewModels;
 

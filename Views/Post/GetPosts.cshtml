@@ -13,7 +13,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-8 post-block m-3 parentComm">
                 <div class="m-3">
-                    <a class="text-white">
+                    <a class="text-white" asp-controller="User" asp-action="MainUser" asp-route-userId="@post.User.Id">
                         @{
                             string fullName = post.User.FirstName + " " + post.User.LastName;
                         }
