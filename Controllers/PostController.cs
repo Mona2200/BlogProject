@@ -44,6 +44,7 @@ namespace BlogProject.Controllers
             foreach (var comment in comments)
             {
                commentsViewModels[j] = new CommentViewModel();
+               commentsViewModels[j].Id = comment.Id;
                commentsViewModels[j].Post = post;
                commentsViewModels[j].User = await _userService.GetUserById(comment.UserId);
                commentsViewModels[j].Content = comment.Content;

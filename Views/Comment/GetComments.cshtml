@@ -1,0 +1,21 @@
+﻿@using BlogProject.ViewModels.Response
+@model CommentViewModel[]
+
+@foreach (var comment in @Model)
+{
+    <div class="row flex-row-reverse">
+        <div class="col-lg-6 text-end border-1 border-white p-2 br-20 mt-1 m-lg-4 m-md-2 m-sm-0">
+            <p class="fw-bold">@comment.User.FirstName</p>
+            <p>@comment.Content</p>
+            <div class="d-flex justify-content-begin">
+                <p class="position-absolute color-main translateY-100">
+                    @if (Context.User.Identity.Name == comment.User.Email)
+                    {
+                        <a class="pointer fs-3 focus-outline-none color-main" asp-route-commentId="@comment.Id" asp-route-postId="@comment.Post.Id" asp-controller="Comment" asp-action="GetEditComment">&#9998;</a>
+                        <a class="pointer fs-3 focus-outline-none color-main" asp-route-commentId="@comment.Id" asp-controller="Comment" asp-action="GetDeleteComment">&#10008;</a>
+                    }
+                </p>
+            </div>
+        </div>
+    </div>
+}

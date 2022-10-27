@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace BlogProject.Controllers
 {
-    public class CommentController : Controller
+   public class CommentController : Controller
    {
       private readonly ILogger<CommentController> _logger;
       private readonly IMapper _mapper;
@@ -55,6 +55,8 @@ namespace BlogProject.Controllers
             commentsViewModels[j] = new CommentViewModel();
             commentsViewModels[j].Post = post;
             commentsViewModels[j].User = await _userService.GetUserById(comm.UserId);
+
+            commentsViewModels[j].Id = comm.Id;
             commentsViewModels[j].Content = comm.Content;
             j++;
          }
@@ -74,6 +76,7 @@ namespace BlogProject.Controllers
       public async Task<IActionResult> AddComment(AddCommentViewModel view)
       {
          var postId = view.Post.Id;
+
          ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
          var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
          var user = await _userService.GetUserByEmail(claimEmail);
@@ -86,24 +89,68 @@ namespace BlogProject.Controllers
          return RedirectToAction("AddComment", "Comment", new { postId = postId });
       }
       [Authorize(Roles = "user")]
-      [HttpPut]
-      [Route("EditComment")]
-      public async Task<IActionResult> EditComment(Guid id, AddCommentViewModel view)
+      [HttpGet]
+      public async Task<IActionResult> GetEditComment(Guid commentId, Guid postId)
       {
          ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
          var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
          var claimRoles = ident.Claims.Where(u => u.Type == ClaimTypes.Role).ToArray();
          var user = await _userService.GetUserByEmail(claimEmail);
+
+         var commentViewModel = new AddCommentViewModel();
+
+         var comment = await GetCommentById(commentId);
+         if (comment == null)
+            return BadRequest();
+         commentViewModel.Id = comment.Id;
+         commentViewModel.Content = comment.Content;
+
+         var post = await _postService.GetPostById(postId);
+         var postViewModel = _mapper.Map<Post, PostViewModel>(post);
+         postViewModel.User = await _userService.GetUserById(post.UserId);
+
+         var tags = await _tagService.GetTagByPostId(postId);
+         postViewModel.Tags = tags;
+
+         var comments = await _commentService.GetCommentByPostId(post.Id);
+         var commentsViewModels = new CommentViewModel[comments.Length];
+         var j = 0;
+         foreach (var comm in comments)
+         {
+            commentsViewModels[j] = new CommentViewModel();
+            commentsViewModels[j].Post = post;
+            commentsViewModels[j].User = await _userService.GetUserById(comm.UserId);
+
+            commentsViewModels[j].Id = comm.Id;
+            commentsViewModels[j].Content = comm.Content;
+            j++;
+         }
+         postViewModel.Comments = commentsViewModels;
+         commentViewModel.Post = postViewModel;
+
+         return View("EditComment", commentViewModel);
+      }
+      [Authorize(Roles = "user")]
+      [HttpPost]
+      [Route("EditComment")]
+      public async Task<IActionResult> EditComment(AddCommentViewModel view)
+      {
+         ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
+         var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
+         var claimRoles = ident.Claims.Where(u => u.Type == ClaimTypes.Role).ToArray();
+         var user = await _userService.GetUserByEmail(claimEmail);
+
          var userComments = await _commentService.GetCommentByUserId(user.Id);
 
-         if (userComments.FirstOrDefault(p => p.Id == id) != null || claimRoles.FirstOrDefault(r => r.Value == "moder") != null)
+         if (userComments.FirstOrDefault(p => p.Id == view.Id) != null)
          {
-            var comment = await GetCommentById(id);
+            var comment = await GetCommentById(view.Id);
             if (comment == null)
                return BadRequest();
             var newComment = _mapper.Map<AddCommentViewModel, Comment>(view);
             await _commentService.Update(comment, newComment);
-            return Ok();
+
+            return RedirectToAction("AddComment", new { postId = view.Post.Id });
          }
          return BadRequest();
       }
