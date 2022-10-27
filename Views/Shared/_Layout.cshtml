@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BlogProject</title>
-    <link rel="icon" href="~/src/Icone.svg"/>
+    <link rel="icon" href="~/src/Icone.svg" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BlogProject.styles.css" asp-append-version="true" />
@@ -31,6 +31,12 @@
                             <li class="nav-item">
                                 <a class="nav-link text-white" asp-controller="Comment" asp-action="GetAllComments">Комментарии</a>
                             </li>
+                            @if (Context.User.IsInRole("moder"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Tag" asp-action="GetAllTags">Теги</a>
+                                </li>
+                            }
                         </ul>
                         <ul class="navbar-nav flex-grow-1 justify-content-end menu-md">
                             <li class="nav-item">
@@ -57,8 +63,8 @@
 
     <div class="modal modal-menu fade" id="modalMenu" tabindex="-1" role="dialog" aria-hidden="false">
         <div class="modal-dialog modal-sm modal-margin" role="document">
-          <div class="modal-height modal-content">
-             <div class="modal-body">
+            <div class="modal-height modal-content">
+                <div class="modal-body">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-black" asp-controller="Post" asp-action="GetPosts">Новости</a>
@@ -72,15 +78,21 @@
                         <li class="nav-item">
                             <a class="nav-link text-black" asp-controller="Comment" asp-action="GetAllComments">Комментарии</a>
                         </li>
+                        @if (Context.User.IsInRole("moder"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Tag" asp-action="GetAllTags">Теги</a>
+                            </li>
+                        }
                     </ul>
                     <ul class="navbar-nav flex-grow-1 justify-content-end">
                         <li class="nav-item">
                             <a class="nav-link text-black" asp-controller="Home" asp-action="Logout">Выход</a>
                         </li>
                     </ul>
-             </div>            
-          </div>            
-       </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

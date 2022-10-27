@@ -12,6 +12,9 @@
                     @if (Context.User.Identity.Name == comment.User.Email)
                     {
                         <a class="pointer fs-3 focus-outline-none color-main" asp-route-commentId="@comment.Id" asp-route-postId="@comment.Post.Id" asp-controller="Comment" asp-action="GetEditComment">&#9998;</a>
+                    }
+                    @if (Context.User.Identity.Name == comment.User.Email || Context.User.IsInRole("moder"))
+                    {
                         <a class="pointer fs-3 focus-outline-none color-main" asp-route-commentId="@comment.Id" asp-route-postId="@comment.Post.Id" asp-controller="Comment" asp-action="DeleteComment">&#10008;</a>
                     }
                 </p>

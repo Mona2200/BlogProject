@@ -32,4 +32,10 @@
     $(".closeModalAgreement").click(function () {
         $(".modalAgreement").modal('hide')
     });
+
+
+    $(".linkDeleteTag").click(function () {
+        $(this).next().next().show();
+        $(this).next().hide();
+    });
 });

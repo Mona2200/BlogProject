@@ -1,0 +1,32 @@
+﻿@using BlogProject.ViewModels.Response
+@model TagViewModel
+
+@{
+    ViewData["Title"] = "Теги";
+    Layout = "_Layout";
+}
+
+<div class="container row">
+    @foreach (var tag in Model.Tags)
+    {
+        @if (Context.User.IsInRole("moder"))
+        {
+            <div class="col-lg-3">
+                <div class="post-block p-3">
+                    <a class="pointer fs-3 focus-outline-none color-main" asp-route-id="@tag.Id" asp-controller="Tag" asp-action="DeleteTag">&#10008;</a>
+                    <a class="pointer fs-3 focus-outline-none color-main linkDeleteTag">&#9998;</a>
+                    <p class="tagName">@tag.Name</p>
+                    <form class="formEditTag hide" method="post" asp-controller="Tag" asp-action="EditTag">
+                        <input class="input text-center form-control-plaintext" asp-for="@Model.TagName" />
+                        <input class="d-none" asp-for="@Model.TagId" value="@tag.Id" readonly />
+                        <button class="button p-2 m-2">Сохранить</button>
+                    </form>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+
+
+

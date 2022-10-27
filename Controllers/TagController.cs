@@ -2,6 +2,7 @@
 using BlogProject.Data;
 using BlogProject.Models;
 using BlogProject.ViewModels.Request;
+using BlogProject.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
@@ -25,6 +26,17 @@ namespace BlogProject.Controllers
       {
          var tags = await _tagService.GetTags();
          return tags;
+      }
+      [Authorize(Roles = "moder")]
+      [HttpGet]
+      [Route("GetAllTags")]
+      public async Task<IActionResult> GetAllTags()
+      {
+         var tags = await _tagService.GetTags();
+         var tagViewModel = new TagViewModel();
+         tagViewModel.Tags = await _tagService.GetTags();
+
+         return View("AllTags", tagViewModel);
       }
       [Authorize(Roles = "user")]
       [HttpGet]
@@ -66,19 +78,19 @@ namespace BlogProject.Controllers
          return View(model);
       }
       [Authorize(Roles = "moder")]
-      [HttpPut]
+      [HttpPost]
       [Route("EditTag")]
-      public async Task<IActionResult> EditTag(Guid id, AddTagViewModel view)
+      public async Task<IActionResult> EditTag(TagViewModel view)
       {
-         var editTag = await _tagService.GetTagById(id);
+         var editTag = await _tagService.GetTagById(view.TagId);
          if (editTag == null)
             return BadRequest();
-         var newTag = _mapper.Map<AddTagViewModel, Tag>(view);
+         var newTag = new Tag() { Id = view.TagId, Name = view.TagName };
          await _tagService.Update(editTag, newTag);
-         return Ok();
+         return RedirectToAction("GetAllTags");
       }
       [Authorize(Roles = "moder")]
-      [HttpDelete]
+      [HttpGet]
       [Route("DeleteTag")]
       public async Task<IActionResult> DeleteTag(Guid id)
       {
@@ -86,7 +98,7 @@ namespace BlogProject.Controllers
          if (tag == null)
             return BadRequest();
          await _tagService.Delete(tag);
-         return Ok();
+         return RedirectToAction("GetAllTags");
       }
    }
 }
