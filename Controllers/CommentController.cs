@@ -5,6 +5,7 @@ using BlogProject.ViewModels.Request;
 using BlogProject.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 
 namespace BlogProject.Controllers
@@ -155,9 +156,9 @@ namespace BlogProject.Controllers
          return BadRequest();
       }
       [Authorize(Roles = "user")]
-      [HttpDelete]
+      [HttpGet]
       [Route("DeleteComment")]
-      public async Task<IActionResult> DeleteComment(Guid id)
+      public async Task<IActionResult> DeleteComment(Guid commentId, Guid postId)
       {
          ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
          var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
@@ -165,13 +166,13 @@ namespace BlogProject.Controllers
          var user = await _userService.GetUserByEmail(claimEmail);
          var userComments = await _commentService.GetCommentByUserId(user.Id);
 
-         if (userComments.FirstOrDefault(p => p.Id == id) != null || claimRoles.FirstOrDefault(r => r.Value == "moder") != null)
+         if (userComments.FirstOrDefault(p => p.Id == commentId) != null || claimRoles.FirstOrDefault(r => r.Value == "moder") != null)
          {
-            var comment = await GetCommentById(id);
+            var comment = await GetCommentById(commentId);
             if (comment == null)
                return BadRequest();
             await _commentService.Delete(comment);
-            return Ok();
+            return RedirectToAction("AddComment", new { postId = postId });
          }
          return BadRequest();
       }
