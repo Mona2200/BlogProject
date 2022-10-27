@@ -176,12 +176,12 @@ namespace BlogProject.Controllers
             return View(post);
          }
          else
-            return RedirectToAction("Main", "User");
+            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
       }
       [Authorize(Roles = "user")]
       [HttpPost]
       [Route("EditPost")]
-      public async Task<IActionResult> EditPost(/*Guid id, Guid[] TagIds, AddPostViewModel view*/FormPostViewModel model)
+      public async Task<IActionResult> EditPost(FormPostViewModel model)
       {
          ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
          var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
@@ -193,7 +193,7 @@ namespace BlogProject.Controllers
          {
             var editPost = await _postService.GetPostById(model.postId);
             if (editPost == null)
-               return BadRequest();
+               return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
             var newPost = _mapper.Map<AddPostViewModel, Post>(model.Post);
 
             Guid[] tagIds = model.TagIds.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(t => Guid.Parse(t)).ToArray();
@@ -201,7 +201,7 @@ namespace BlogProject.Controllers
             await _postService.Update(editPost, newPost, tagIds);
             return RedirectToAction("Main", "User");
          }
-         return BadRequest();
+         return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
       }
       [Authorize(Roles = "user")]
       [HttpGet]
@@ -218,11 +218,11 @@ namespace BlogProject.Controllers
          {
             var post = await _postService.GetPostById(id);
             if (post == null)
-               return BadRequest();
+               return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
             await _postService.Delete(post);
             return RedirectToAction("Main", "User");
          }
-         return BadRequest();
+         return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
       }
    }
 }

@@ -47,16 +47,11 @@ namespace BlogProject.Controllers
       [Route("Form")]
       public async Task<IActionResult> Form(AddPostViewModel view)
       {
-         if (ModelState.IsValid)
-         {
             var allTags = await GetTags();
             var post = new FormPostViewModel();
             post.Post = view;
             post.AllTags = allTags;
             return View("AddTag", post);
-         }
-         else
-         return View("~/Views/Post/AddPost.cshtml");
       }
       [Authorize(Roles = "user")]
       [HttpPost]

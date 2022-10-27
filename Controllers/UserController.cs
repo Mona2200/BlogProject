@@ -147,7 +147,7 @@ namespace BlogProject.Controllers
          var editUser = await _userService.GetUserByEmail(claimEmail);
 
          if (editUser == null)
-            return BadRequest();
+            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Что-то пошло не так" });
          var user = _mapper.Map<User, RegisterViewModel>(editUser);
          return View(user);
       }
@@ -161,7 +161,7 @@ namespace BlogProject.Controllers
          var editUser = await _userService.GetUserByEmail(claimEmail);
 
          if (editUser == null)
-            return BadRequest();
+            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Что-то пошло не так" });
          var newUser = _mapper.Map<RegisterViewModel, User>(view);
          await _userService.Update(editUser, newUser);
 
@@ -186,7 +186,7 @@ namespace BlogProject.Controllers
          var user = await _userService.GetUserByEmail(claimEmail);
 
          if (user == null)
-            return BadRequest();
+            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Что-то пошло не так" });
          await _roleService.Delete(user.Id);
          await _userService.Delete(user);
 

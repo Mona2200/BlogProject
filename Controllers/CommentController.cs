@@ -126,7 +126,7 @@ namespace BlogProject.Controllers
 
          var comment = await GetCommentById(commentId);
          if (comment == null)
-            return BadRequest();
+            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
          commentViewModel.Id = comment.Id;
          commentViewModel.Content = comment.Content;
 
@@ -171,13 +171,13 @@ namespace BlogProject.Controllers
          {
             var comment = await GetCommentById(view.Id);
             if (comment == null)
-               return BadRequest();
+               return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найдён" });
             var newComment = _mapper.Map<AddCommentViewModel, Comment>(view);
             await _commentService.Update(comment, newComment);
 
             return RedirectToAction("AddComment", new { postId = view.Post.Id });
          }
-         return BadRequest();
+         return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
       }
       [Authorize(Roles = "user")]
       [HttpGet]
@@ -194,11 +194,11 @@ namespace BlogProject.Controllers
          {
             var comment = await GetCommentById(commentId);
             if (comment == null)
-               return BadRequest();
+               return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
             await _commentService.Delete(comment);
             return RedirectToAction("AddComment", new { postId = postId });
          }
-         return BadRequest();
+         return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён"});
       }
    }
 }
