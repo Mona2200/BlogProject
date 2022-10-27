@@ -1,0 +1,57 @@
+﻿@using BlogProject.ViewModels.Response
+@model GetPostsViewModel
+
+@{
+    ViewData["Title"] = "Новости";
+    Layout = "_Layout";
+}
+
+@foreach (var post in Model.posts)
+{
+     @if (Context.User.Identity.Name != post.User.Email)
+    {
+        <div class="row justify-content-center">
+            <div class="col-lg-8 post-block m-3 parentComm">
+                <div class="m-3">
+                    <a class="text-white">
+                        @{
+                            string fullName = post.User.FirstName + " " + post.User.LastName;
+                        }
+                        @fullName
+                      </a>
+                    <h4 class="text-white">@post.Title</h4>
+                    <p class="text-white">@post.Content</p>
+                    <p class="w-75">
+                        @foreach (var tag in post.Tags)
+                        {
+                            <span class="tag m-1 p-1">@tag.Name</span>
+                        }
+                    </p>
+                    <div class="d-flex justify-content-end">
+                        <p class="position-absolute color-main translateY-100">
+                            <span class="btnComm pointer fs-1">&crarr;</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="hide hideComm">
+                <div class="comments container">
+                    @foreach (var comment in post.Comments)
+                    {
+                        <div class="row flex-row-reverse">
+                            <div class="col-lg-6 text-end border-1 border-white p-2 br-20 mt-1 m-lg-4 m-md-2 m-sm-0">
+                                <p class="fw-bold">@comment.User.FirstName</p>
+                                <p>@comment.Content</p>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+                <div class="d-flex justify-content-center">
+                    <a class="button p-2 text-center focus-outline-none m-2" formmethod="get" asp-controller="Comment" asp-action="AddComment" asp-route-postId="@post.Id">Добавить комментарий</a>
+                </div>
+            </div>
+        </div>
+    }
+
+}

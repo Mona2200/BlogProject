@@ -28,7 +28,7 @@ namespace BlogProject.Controllers
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetPosts")]
-      public async Task<PostViewModel[]> GetPosts()
+      public async Task<IActionResult> GetPosts()
       {
          var posts = await _postService.GetPosts();
          var postViewModels = new PostViewModel[posts.Length];
@@ -43,16 +43,20 @@ namespace BlogProject.Controllers
             var j = 0;
             foreach (var comment in comments)
             {
-
+               commentsViewModels[j] = new CommentViewModel();
                commentsViewModels[j].Post = post;
                commentsViewModels[j].User = await _userService.GetUserById(comment.UserId);
                commentsViewModels[j].Content = comment.Content;
             }
             postViewModels[i].Comments = commentsViewModels;
+            postViewModels[i].User = await _userService.GetUserById(post.UserId);
 
             i++;
          }
-         return postViewModels;
+
+         var getPosts = new GetPostsViewModel() { posts = postViewModels };
+
+         return View(getPosts);
       }
       [Authorize(Roles = "user")]
       [HttpGet]
