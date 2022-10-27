@@ -1,0 +1,9 @@
+﻿@using BlogProject.ViewModels.Response
+@model CommentViewModel[]
+
+@{
+    ViewData["Title"] = "Ваши комментарии";
+    Layout = "_Layout";
+}
+
+<partial name="~/Views/Comment/GetComments.cshtml" model="@Model"></partial>

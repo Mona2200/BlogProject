@@ -23,7 +23,7 @@ namespace BlogProject.Controllers
          _logger = logger;
          _mapper = mapper;
       }
-      [Authorize(Roles = "moder")]
+      [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetComments")]
       public async Task<Comment[]> GetComments()
@@ -38,6 +38,30 @@ namespace BlogProject.Controllers
       {
          var comment = await _commentService.GetCommentById(id);
          return comment;
+      }
+      [Authorize(Roles = "user")]
+      [HttpGet]
+      [Route("GetAllComments")]
+      public async Task<IActionResult> GetAllComments()
+      {
+         ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
+         var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
+         var user = await _userService.GetUserByEmail(claimEmail);
+
+         var comments = await _commentService.GetCommentByUserId(user.Id);
+         var commentsViewModel = new CommentViewModel[comments.Length];
+
+         int j = 0;
+         foreach (var comment in comments)
+         {
+            commentsViewModel[j] = new CommentViewModel() { Id = comment.Id, Content = comment.Content };
+            var post = await _postService.GetPostById(comment.PostId);
+            commentsViewModel[j].Post = post;
+            commentsViewModel[j].User = user;
+            j++;
+         }
+         commentsViewModel = commentsViewModel.Reverse().ToArray();
+         return View(commentsViewModel);
       }
       [Authorize(Roles = "user")]
       [HttpGet]

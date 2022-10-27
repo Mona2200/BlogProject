@@ -29,7 +29,7 @@
                                 <a class="nav-link text-white" asp-controller="User" asp-action="Main">Блог</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Комментарии</a>
+                                <a class="nav-link text-white" asp-controller="Comment" asp-action="GetAllComments">Комментарии</a>
                             </li>
                         </ul>
                         <ul class="navbar-nav flex-grow-1 justify-content-end menu-md">
@@ -70,7 +70,7 @@
                             <a class="nav-link text-black" asp-controller="User" asp-action="Main">Блог</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-black" asp-area="" asp-controller="Home" asp-action="Privacy">Комментарии</a>
+                            <a class="nav-link text-black" asp-controller="Comment" asp-action="GetAllComments">Комментарии</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav flex-grow-1 justify-content-end">
