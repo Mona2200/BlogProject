@@ -1,6 +1,51 @@
-﻿@{
+﻿@using BlogProject.ViewModels.Request
+@model RegisterViewModel
+
+@{
     ViewData["Title"] = "Регистрация";
     Layout = "_Layout";
 }
 
-Регистрация
+<h1 class="text-white text-center">Регистрация</h1>
+<div class="row justify-content-center">
+    <form class="col-lg-8 m-3 d-flex flex-column justify-content-center" method="post" asp-controller="User" asp-action="Register">
+        <p class="w-100 text-center m-2">
+            <label asp-for="@Model.FirstName"></label>
+            <input class="input text-center form-control-plaintext w-75" asp-for="@Model.FirstName" />
+        </p>
+        <span asp-validation-for="@Model.FirstName" class="text-danger"></span>
+
+        <p class="w-100 text-center m-2">
+            <label asp-for="@Model.LastName"></label>
+            <input class="input text-center form-control-plaintext w-75" asp-for="@Model.LastName" />
+        </p>
+        <span asp-validation-for="@Model.LastName" class="text-danger"></span>
+
+        <p class="w-100 text-center m-2">
+            <label asp-for="@Model.Sex"></label>
+            <input class="input text-center form-control-plaintext w-75" asp-for="@Model.Sex" />
+        </p>
+        <span asp-validation-for="@Model.Sex" class="text-danger"></span>
+
+        <p class="w-100 text-center m-2">
+            <label asp-for="@Model.Email"></label>
+            <input class="input text-center form-control-plaintext w-75" asp-for="@Model.Email" />
+        </p>
+        <span asp-validation-for="@Model.Email" class="text-danger"></span>
+
+        <p class="w-100 text-center m-2">
+            <label asp-for="@Model.Password"></label>
+            <input class="input text-center form-control-plaintext w-75" asp-for="@Model.Password" />
+        </p>
+        <span asp-validation-for="@Model.Password" class="text-danger"></span>
+
+        <p class="w-100 text-center m-2">
+            <label asp-for="@Model.PasswordConfirm"></label>
+            <input class="input text-center form-control-plaintext w-75" asp-for="@Model.PasswordConfirm" />
+        </p>
+        <span asp-validation-for="@Model.PasswordConfirm" class="text-danger"></span>
+
+        <button class="col-lg-4 col-md-6 col-sm-12 col-12 button p-2 m-auto mt-5">Зарегестрироваться</button>
+    </form>
+</div>
+

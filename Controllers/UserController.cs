@@ -120,7 +120,22 @@ namespace BlogProject.Controllers
          var role = await _roleService.GetRoleByName("user");
          await _roleService.Save(user.Id, role.Id);
          await _userService.Save(user);
-         return Ok();
+
+         var newUser = await _userService.GetUserByEmail(view.Email);
+         var newRoles = await _roleService.GetRoleByUserId(newUser.Id);
+
+         var claims = new List<Claim>
+            {
+            new Claim(ClaimsIdentity.DefaultNameClaimType, newUser.Email)
+            };
+
+         for (int i = 0; i < newRoles.Length; i++)
+            claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, newRoles[i].Name));
+
+         var claimsIdentity = new ClaimsIdentity(claims, "AppCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+         return RedirectToAction("Main");
       }
       [Authorize(Roles = "user")]
       [HttpGet]
