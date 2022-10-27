@@ -56,6 +56,8 @@ namespace BlogProject.Controllers
             i++;
          }
 
+         postViewModels = postViewModels.Reverse().ToArray();
+
          var getPosts = new GetPostsViewModel() { posts = postViewModels };
 
          return View(getPosts);

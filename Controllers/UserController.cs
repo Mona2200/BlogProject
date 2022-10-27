@@ -104,6 +104,8 @@ namespace BlogProject.Controllers
             postViewModels[i].Comments = commentsViewModels;
             i++;
          }
+
+         postViewModels = postViewModels.Reverse().ToArray();
          userViewModel.Posts = postViewModels;
          var roles = await _roleService.GetRoleByUserId(id);
          userViewModel.Roles = roles;
