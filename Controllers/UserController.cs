@@ -177,7 +177,7 @@ namespace BlogProject.Controllers
          return RedirectToRoute(new { controller = "User", action = "Main" });
       }
       [Authorize(Roles = "user")]
-      [HttpDelete]
+      [HttpGet]
       [Route("DeleteUser")]
       public async Task<IActionResult> DeleteUser()
       {
@@ -195,16 +195,16 @@ namespace BlogProject.Controllers
          return RedirectToAction("Index", "Home");
       }
       [Authorize(Roles = "admin")]
-      [HttpDelete]
-      [Route("DeleteUser")]
-      public async Task<IActionResult> DeleteUser(Guid id)
+      [HttpGet]
+      [Route("DeleteUserByAdmin")]
+      public async Task<IActionResult> DeleteUserByAdmin(Guid id)
       {
          var user = await _userService.GetUserById(id);
          if (user == null)
-            return BadRequest();
+            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
          await _roleService.Delete(user.Id);
          await _userService.Delete(user);
-         return Ok();
+         return RedirectToAction("GetAllUsers");
       }
    }
 }

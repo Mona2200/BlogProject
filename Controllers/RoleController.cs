@@ -2,6 +2,7 @@
 using BlogProject.Data;
 using BlogProject.Models;
 using BlogProject.ViewModels;
+using BlogProject.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,33 +28,40 @@ namespace BlogProject.Controllers
          return Ok();
       }
       [Authorize(Roles = "admin")]
-      [HttpPost]
+      [HttpGet]
       [Route("AddAdminRoleToUser")]
       public async Task<IActionResult> AddAdminRoleToUser(Guid userId)
       {
-         var user = _userService.GetUserById(userId);
+         var user = await _userService.GetUserById(userId);
          if (user == null)
-            return BadRequest();
+            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
 
-         var adminRole = await _roleService.GetRoleByName("admin");
-         await _roleService.Save(userId, adminRole.Id);
+         var roles = await _roleService.GetRoleByUserId(userId);
+         if (roles.FirstOrDefault(r => r.Name == "admin") == null)
+         {
+            var adminRole = await _roleService.GetRoleByName("admin");
+            await _roleService.Save(userId, adminRole.Id);
+         }
 
-         var moderRole = await _roleService.GetRoleByName("moder");
-         await _roleService.Save(userId, moderRole.Id);
-
-         return Ok();
+         return RedirectToAction("GetAllUsers", "User");
       }
       [Authorize(Roles = "admin")]
-      [HttpPost]
+      [HttpGet]
       [Route("AddModerRoleToUser")]
       public async Task<IActionResult> AddModerRoleToUser(Guid userId)
       {
          var user = _userService.GetUserById(userId);
          if (user == null)
-            return BadRequest();
-         var moderRole = await _roleService.GetRoleByName("moder");
-         await _roleService.Save(userId, moderRole.Id);
-         return Ok();
+            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+
+         var roles = await _roleService.GetRoleByUserId(userId);
+         if (roles.FirstOrDefault(r => r.Name == "moder") == null)
+         {
+            var moderRole = await _roleService.GetRoleByName("moder");
+            await _roleService.Save(userId, moderRole.Id);
+         }
+
+         return RedirectToAction("GetAllUsers", "User");
       }
       [Authorize(Roles = "admin")]
       [HttpGet]

@@ -84,7 +84,7 @@ namespace BlogProject.Controllers
       {
          var editTag = await _tagService.GetTagById(view.TagId);
          if (editTag == null)
-            return BadRequest();
+            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
          var newTag = new Tag() { Id = view.TagId, Name = view.TagName };
          await _tagService.Update(editTag, newTag);
          return RedirectToAction("GetAllTags");
@@ -96,7 +96,7 @@ namespace BlogProject.Controllers
       {
          var tag = await _tagService.GetTagById(id);
          if (tag == null)
-            return BadRequest();
+            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
          await _tagService.Delete(tag);
          return RedirectToAction("GetAllTags");
       }
