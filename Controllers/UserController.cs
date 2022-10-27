@@ -13,7 +13,7 @@ using System.Security.Claims;
 
 namespace BlogProject.Controllers
 {
-    public class UserController : Controller
+   public class UserController : Controller
    {
       private readonly ILogger<UserController> _logger;
       private readonly IMapper _mapper;
@@ -42,8 +42,8 @@ namespace BlogProject.Controllers
       [HttpGet]
       public async Task<IActionResult> MainUser(Guid userId)
       {
-            var userViewModel = await GetUserById(userId);
-            return View("Main", userViewModel);
+         var userViewModel = await GetUserById(userId);
+         return View("Main", userViewModel);
       }
 
       [Authorize(Roles = "user")]
@@ -53,6 +53,25 @@ namespace BlogProject.Controllers
       {
          var users = await _userService.GetUsers();
          return users;
+      }
+      [Authorize(Roles = "user")]
+      [HttpGet]
+      [Route("GetAllUsers")]
+      public async Task<IActionResult> GetAllUsers()
+      {
+         var users = await _userService.GetUsers();
+         var userViewModels = new UserViewModel[users.Length];
+         int j = 0;
+         foreach (var user in users)
+         {
+            userViewModels[j] = _mapper.Map<User, UserViewModel>(user);
+
+            var posts = await _postService.GetPostByUserId(user.Id);
+            userViewModels[j].Posts = new PostViewModel[posts.Length];
+
+            j++;
+         }
+         return View(userViewModels);
       }
       [Authorize(Roles = "user")]
       [HttpGet]

@@ -1,0 +1,19 @@
+﻿@using BlogProject.ViewModels.Response
+@using BlogProject.ViewModels.Request
+@model UserViewModel[]
+@{
+    ViewData["Title"] = "Пользователи";
+    Layout = "_Layout";
+}
+
+@foreach (var user in @Model)
+{
+   <div class="container row justify-content-center">
+      <div class="col-lg-8 post-block m-2 p-3">
+            <h5><a class="text-white" asp-controller="User" asp-action="MainUser" asp-route-userId="@user.Id">@user.FullName</a></h5>
+            <p class="text-white">@user.Sex</p>
+            <p class="text-white">@user.Email</p>
+            <p class="text-white">@user.Posts.Length публикаций</p>
+      </div>
+   </div>
+}
