@@ -36,7 +36,8 @@ namespace BlogProject.Controllers
          foreach (var post in posts)
          {
             postViewModels[i] = _mapper.Map<Post, PostViewModel>(post);
-            postViewModels[i].Tags = await _tagService.GetTagByPostId(post.Id);          
+            postViewModels[i].Tags = await _tagService.GetTagByPostId(post.Id);
+            
             postViewModels[i].Comments = await _commentService.GetCommentsViewModelByPostId(post.Id);
             postViewModels[i].User = await _userService.GetUserById(post.UserId);
 
@@ -59,10 +60,7 @@ namespace BlogProject.Controllers
             return null;
          var postViewModel = _mapper.Map<Post, PostViewModel>(post);
          postViewModel.Tags = await _tagService.GetTagByPostId(post.Id);
-
-         var commentsViewModels = await _commentService.GetCommentsViewModelByPostId(post.Id);
-
-         postViewModel.Comments = commentsViewModels;
+         postViewModel.Comments = await _commentService.GetCommentsViewModelByPostId(post.Id);
          return postViewModel;
       }
       [Authorize(Roles = "user")]

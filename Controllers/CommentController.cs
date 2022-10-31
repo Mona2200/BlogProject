@@ -62,14 +62,12 @@ namespace BlogProject.Controllers
          var post = await _postService.GetPostById(postId);
          var tags = await _tagService.GetTagByPostId(postId);
 
-         var commentsViewModels = await _commentService.GetCommentsViewModelByPostId(post.Id);
-
          var postViewModel = new PostViewModel();
          postViewModel.Id = postId;
          postViewModel.Title = post.Title;
          postViewModel.Content = post.Content;
          postViewModel.Tags = tags;
-         postViewModel.Comments = commentsViewModels;
+         postViewModel.Comments = await _commentService.GetCommentsViewModelByPostId(postId);
          comment.Post = postViewModel;
          return View(comment);
       }
@@ -115,9 +113,7 @@ namespace BlogProject.Controllers
          var tags = await _tagService.GetTagByPostId(postId);
          postViewModel.Tags = tags;
 
-         var commentsViewModels = await _commentService.GetCommentsViewModelByPostId(post.Id);
-         
-         postViewModel.Comments = commentsViewModels;
+         postViewModel.Comments = await _commentService.GetCommentsViewModelByPostId(post.Id);
          commentViewModel.Post = postViewModel;
 
          return View("EditComment", commentViewModel);
@@ -155,6 +151,7 @@ namespace BlogProject.Controllers
          var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
          var claimRoles = ident.Claims.Where(u => u.Type == ClaimTypes.Role).ToArray();
          var user = await _userService.GetUserByEmail(claimEmail);
+
          var userComments = await _commentService.GetCommentByUserId(user.Id);
 
          if (userComments.FirstOrDefault(p => p.Id == commentId) != null || claimRoles.FirstOrDefault(r => r.Value == "moder") != null)
