@@ -30,23 +30,9 @@ namespace BlogProject.Controllers
       [Route("GetPosts")]
       public async Task<IActionResult> GetPosts()
       {
-         var posts = await _postService.GetPosts();
-         var postViewModels = new PostViewModel[posts.Length];
-         int i = 0;
-         foreach (var post in posts)
-         {
-            postViewModels[i] = _mapper.Map<Post, PostViewModel>(post);
-            postViewModels[i].Tags = await _tagService.GetTagByPostId(post.Id);
-            
-            postViewModels[i].Comments = await _commentService.GetCommentsViewModelByPostId(post.Id);
-            postViewModels[i].User = await _userService.GetUserById(post.UserId);
+         var postViewModels = await _postService.GetPostsViewModelAll();
 
-            i++;
-         }
-
-         postViewModels = postViewModels.Reverse().ToArray();
-
-         var getPosts = new GetPostsViewModel() { posts = postViewModels };
+         var getPosts = new GetPostsViewModel() { posts = postViewModels.Reverse().ToArray() };
 
          return View(getPosts);
       }
@@ -55,12 +41,7 @@ namespace BlogProject.Controllers
       [Route("GetPostById")]
       public async Task<PostViewModel> GetPostById(Guid id)
       {
-         var post = await _postService.GetPostById(id);
-         if (post == null)
-            return null;
-         var postViewModel = _mapper.Map<Post, PostViewModel>(post);
-         postViewModel.Tags = await _tagService.GetTagByPostId(post.Id);
-         postViewModel.Comments = await _commentService.GetCommentsViewModelByPostId(post.Id);
+         var postViewModel = await _postService.GetPostViewModelById(id);
          return postViewModel;
       }
       [Authorize(Roles = "user")]
@@ -68,17 +49,7 @@ namespace BlogProject.Controllers
       [Route("GetPostByUserId")]
       public async Task<PostViewModel[]> GetPostByUserId(Guid id)
       {
-         var posts = await _postService.GetPostByUserId(id);
-         var postViewModels = new PostViewModel[posts.Length];
-         int i = 0;
-         foreach (var post in posts)
-         {
-            postViewModels[i] = _mapper.Map<Post, PostViewModel>(post);
-            postViewModels[i].Tags = await _tagService.GetTagByPostId(post.Id);
-            postViewModels[i].Comments = await _commentService.GetCommentsViewModelByPostId(post.Id);
-
-            i++;
-         }
+         var postViewModels = await _postService.GetPostsViewModelByUserId(id);
          return postViewModels;
       }
       [Authorize(Roles = "user")]
@@ -122,11 +93,8 @@ namespace BlogProject.Controllers
          if (user == tryUser)
          {
             var post = new FormPostViewModel();
-            post.Post = new AddPostViewModel();
-
+            post.Post = _mapper.Map<Post, AddPostViewModel>(modelPost);
             post.postId = modelPost.Id;
-            post.Post.Title = modelPost.Title;
-            post.Post.Content = modelPost.Content;
             post.AllTags = await _tagService.GetTags();
 
             var tagsPost = await _tagService.GetTagByPostId(modelPost.Id);

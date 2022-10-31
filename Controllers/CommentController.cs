@@ -49,7 +49,6 @@ namespace BlogProject.Controllers
          var user = await _userService.GetUserByEmail(claimEmail);
 
          var commentsViewModel = await _commentService.GetCommentsViewModelByUserId(user.Id);
-
          commentsViewModel = commentsViewModel.Reverse().ToArray();
          return View(commentsViewModel);
       }
@@ -59,16 +58,7 @@ namespace BlogProject.Controllers
       public async Task<IActionResult> AddComment(Guid postId)
       {
          var comment = new AddCommentViewModel();
-         var post = await _postService.GetPostById(postId);
-         var tags = await _tagService.GetTagByPostId(postId);
-
-         var postViewModel = new PostViewModel();
-         postViewModel.Id = postId;
-         postViewModel.Title = post.Title;
-         postViewModel.Content = post.Content;
-         postViewModel.Tags = tags;
-         postViewModel.Comments = await _commentService.GetCommentsViewModelByPostId(postId);
-         comment.Post = postViewModel;
+         comment.Post = await _postService.GetPostViewModelById(postId);
          return View(comment);
       }
       [Authorize(Roles = "user")]
@@ -98,23 +88,11 @@ namespace BlogProject.Controllers
          var claimRoles = ident.Claims.Where(u => u.Type == ClaimTypes.Role).ToArray();
          var user = await _userService.GetUserByEmail(claimEmail);
 
-         var commentViewModel = new AddCommentViewModel();
-
          var comment = await GetCommentById(commentId);
          if (comment == null)
             return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
-         commentViewModel.Id = comment.Id;
-         commentViewModel.Content = comment.Content;
-
-         var post = await _postService.GetPostById(postId);
-         var postViewModel = _mapper.Map<Post, PostViewModel>(post);
-         postViewModel.User = await _userService.GetUserById(post.UserId);
-
-         var tags = await _tagService.GetTagByPostId(postId);
-         postViewModel.Tags = tags;
-
-         postViewModel.Comments = await _commentService.GetCommentsViewModelByPostId(post.Id);
-         commentViewModel.Post = postViewModel;
+         var commentViewModel = _mapper.Map<Comment, AddCommentViewModel>(comment);
+         commentViewModel.Post = await _postService.GetPostViewModelById(postId);
 
          return View("EditComment", commentViewModel);
       }

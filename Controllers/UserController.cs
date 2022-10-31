@@ -82,21 +82,11 @@ namespace BlogProject.Controllers
          if (user == null)
             return null;
          var userViewModel = _mapper.Map<User, UserViewModel>(user);
-         var posts = await _postService.GetPostByUserId(user.Id);
-         var postViewModels = new PostViewModel[posts.Length];
-         int i = 0;
-         foreach (var post in posts)
-         {
-            postViewModels[i] = _mapper.Map<Post, PostViewModel>(post);
-            postViewModels[i].Tags = await _tagService.GetTagByPostId(post.Id);
-            postViewModels[i].Comments = await _commentService.GetCommentsViewModelByPostId(post.Id);
-            i++;
-         }
 
-         postViewModels = postViewModels.Reverse().ToArray();
-         userViewModel.Posts = postViewModels;
-         var roles = await _roleService.GetRoleByUserId(id);
-         userViewModel.Roles = roles;
+         var postViewModels = await _postService.GetPostsViewModelByUserId(user.Id);
+         userViewModel.Posts = postViewModels.Reverse().ToArray();
+
+         userViewModel.Roles = await _roleService.GetRoleByUserId(id);
          return userViewModel;
       }
 
