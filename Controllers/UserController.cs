@@ -48,14 +48,6 @@ namespace BlogProject.Controllers
 
       [Authorize(Roles = "user")]
       [HttpGet]
-      [Route("GetUsers")]
-      public async Task<User[]> GetUsers()
-      {
-         var users = await _userService.GetUsers();
-         return users;
-      }
-      [Authorize(Roles = "user")]
-      [HttpGet]
       [Route("GetAllUsers")]
       public async Task<IActionResult> GetAllUsers()
       {
@@ -73,6 +65,7 @@ namespace BlogProject.Controllers
          }
          return View(userViewModels);
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetUserById")]
@@ -88,20 +81,8 @@ namespace BlogProject.Controllers
          foreach (var post in posts)
          {
             postViewModels[i] = _mapper.Map<Post, PostViewModel>(post);
-            postViewModels[i].Tags = await _tagService.GetTagByPostId(post.Id);
-            var comments = await _commentService.GetCommentByPostId(post.Id);
-            var commentsViewModels = new CommentViewModel[comments.Length];
-            var j = 0;
-            foreach (var comment in comments)
-            {
-               commentsViewModels[j] = new CommentViewModel();
-               commentsViewModels[j].Post = post;
-               var commentUser = await _userService.GetUserById(comment.UserId);
-               commentsViewModels[j].User = commentUser;
-               commentsViewModels[j].Content = comment.Content;
-               j++;
-            }
-            postViewModels[i].Comments = commentsViewModels;
+            postViewModels[i].Tags = await _tagService.GetTagByPostId(post.Id);         
+            postViewModels[i].Comments = await _commentService.GetCommentsViewModelByPostId(post.Id);
             i++;
          }
 

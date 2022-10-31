@@ -36,21 +36,8 @@ namespace BlogProject.Controllers
          foreach (var post in posts)
          {
             postViewModels[i] = _mapper.Map<Post, PostViewModel>(post);
-            postViewModels[i].Tags = await _tagService.GetTagByPostId(post.Id);
-
-            var comments = await _commentService.GetCommentByPostId(post.Id);
-            var commentsViewModels = new CommentViewModel[comments.Length];
-            var j = 0;
-            foreach (var comment in comments)
-            {
-               commentsViewModels[j] = new CommentViewModel();
-               commentsViewModels[j].Id = comment.Id;
-               commentsViewModels[j].Post = post;
-               commentsViewModels[j].User = await _userService.GetUserById(comment.UserId);
-               commentsViewModels[j].Content = comment.Content;
-               j++;
-            }
-            postViewModels[i].Comments = commentsViewModels;
+            postViewModels[i].Tags = await _tagService.GetTagByPostId(post.Id);          
+            postViewModels[i].Comments = await _commentService.GetCommentsViewModelByPostId(post.Id);
             postViewModels[i].User = await _userService.GetUserById(post.UserId);
 
             i++;
@@ -73,17 +60,7 @@ namespace BlogProject.Controllers
          var postViewModel = _mapper.Map<Post, PostViewModel>(post);
          postViewModel.Tags = await _tagService.GetTagByPostId(post.Id);
 
-         var comments = await _commentService.GetCommentByPostId(post.Id);
-         var commentsViewModels = new CommentViewModel[comments.Length];
-         var j = 0;
-         foreach (var comment in comments)
-         {
-
-            commentsViewModels[j].Post = post;
-            commentsViewModels[j].User = await _userService.GetUserById(comment.UserId);
-            commentsViewModels[j].Content = comment.Content;
-            j++;
-         }
+         var commentsViewModels = await _commentService.GetCommentsViewModelByPostId(post.Id);
 
          postViewModel.Comments = commentsViewModels;
          return postViewModel;
@@ -100,19 +77,7 @@ namespace BlogProject.Controllers
          {
             postViewModels[i] = _mapper.Map<Post, PostViewModel>(post);
             postViewModels[i].Tags = await _tagService.GetTagByPostId(post.Id);
-
-            var comments = await _commentService.GetCommentByPostId(post.Id);
-            var commentsViewModels = new CommentViewModel[comments.Length];
-            var j = 0;
-            foreach (var comment in comments)
-            {
-
-               commentsViewModels[j].Post = post;
-               commentsViewModels[j].User = await _userService.GetUserById(comment.UserId);
-               commentsViewModels[j].Content = comment.Content;
-               j++;
-            }
-            postViewModels[i].Comments = commentsViewModels;
+            postViewModels[i].Comments = await _commentService.GetCommentsViewModelByPostId(post.Id);
 
             i++;
          }

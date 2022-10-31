@@ -1,4 +1,5 @@
 ﻿using BlogProject.Models;
+using BlogProject.ViewModels.Response;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 
@@ -26,6 +27,34 @@ namespace BlogProject.Data
       {
          var comment = await _db.Comment.Where(c => c.PostId == id).ToArrayAsync();
          return comment;
+      }
+      public async Task<CommentViewModel[]> GetCommentsViewModel(Comment[] comments)
+      {
+         var commentsViewModels = new CommentViewModel[comments.Length];
+         var j = 0;
+         foreach (var comm in comments)
+         {
+            commentsViewModels[j] = new CommentViewModel();
+            commentsViewModels[j].Post = await _db.Post.Where(p => p.Id == comm.PostId).FirstOrDefaultAsync();
+            commentsViewModels[j].User = await _db.User.Where(u => u.Id == comm.UserId).FirstOrDefaultAsync();
+
+            commentsViewModels[j].Id = comm.Id;
+            commentsViewModels[j].Content = comm.Content;
+            j++;
+         }
+         return commentsViewModels;
+      }
+      public async Task<CommentViewModel[]> GetCommentsViewModelByPostId(Guid postId)
+      {
+         var comments = await GetCommentByPostId(postId);
+         var commentsViewModels = await GetCommentsViewModel(comments);
+         return commentsViewModels;
+      }
+      public async Task<CommentViewModel[]> GetCommentsViewModelByUserId(Guid userId)
+      {
+         var comments = await GetCommentByUserId(userId);
+         var commentsViewModels = await GetCommentsViewModel(comments);
+         return commentsViewModels;
       }
       public async Task Save(Comment comment)
       {
