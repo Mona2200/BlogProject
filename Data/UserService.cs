@@ -10,21 +10,25 @@ namespace BlogProject.Data
       private readonly BlogDbContext _db = new BlogDbContext();
       private readonly PostService _postService = new PostService();
       private readonly CommentService _commentService = new CommentService();
+
       public async Task<User[]> GetUsers()
       {
          var users = await _db.User.ToArrayAsync();
          return users;
       }
+
       public async Task<User> GetUserById(Guid id)
       {
          var user = await _db.User.Where(u => u.Id == id).FirstOrDefaultAsync();
          return user;
       }
+
       public async Task<User> GetUserByEmail(string email)
       {
          var user = await _db.User.Where(u => u.Email == email).FirstOrDefaultAsync();
          return user;
       }
+
       public async Task Save(User user)
       {
          var entry = _db.Entry(user);
@@ -32,6 +36,7 @@ namespace BlogProject.Data
             await _db.User.AddAsync(user);
          await _db.SaveChangesAsync();
       }
+
       public async Task Update(User updateUser, User newUser)
       {
          updateUser.FirstName = newUser.FirstName;
@@ -45,6 +50,7 @@ namespace BlogProject.Data
             _db.User.Update(updateUser);
          await _db.SaveChangesAsync();
       }
+
       public async Task Delete(User user)
       {
          _db.User.Remove(user);

@@ -20,11 +20,13 @@ namespace BlogProject.Controllers
       private readonly PostService _postService = new PostService();
       private readonly TagService _tagService = new TagService();
       private readonly CommentService _commentService = new CommentService();
+
       public PostController(ILogger<PostController> logger, IMapper mapper)
       {
          _logger = logger;
          _mapper = mapper;
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetPosts")]
@@ -36,6 +38,7 @@ namespace BlogProject.Controllers
 
          return View(getPosts);
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetPostById")]
@@ -44,6 +47,7 @@ namespace BlogProject.Controllers
          var postViewModel = await _postService.GetPostViewModelById(id);
          return postViewModel;
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetPostByUserId")]
@@ -52,6 +56,7 @@ namespace BlogProject.Controllers
          var postViewModels = await _postService.GetPostsViewModelByUserId(id);
          return postViewModels;
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("AddPost")]
@@ -59,6 +64,7 @@ namespace BlogProject.Controllers
       {
          return View();
       }
+
       [Authorize(Roles = "user")]
       [HttpPost]
       [Route("AddPost")]
@@ -78,6 +84,7 @@ namespace BlogProject.Controllers
          await _postService.Save(post, tagIds);
          return RedirectToAction("Main", "User");
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("EditPost")]
@@ -109,6 +116,7 @@ namespace BlogProject.Controllers
          else
             return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
       }
+
       [Authorize(Roles = "user")]
       [HttpPost]
       [Route("EditPost")]
@@ -134,6 +142,7 @@ namespace BlogProject.Controllers
          }
          return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("DeletePost")]

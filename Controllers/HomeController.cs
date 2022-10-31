@@ -15,7 +15,7 @@ namespace BlogProject.Controllers
    {
       private readonly ILogger<HomeController> _logger;
       private readonly RoleService _roleService = new RoleService();
-            private readonly UserService _userService = new UserService();
+      private readonly UserService _userService = new UserService();
 
       public HomeController(ILogger<HomeController> logger)
       {

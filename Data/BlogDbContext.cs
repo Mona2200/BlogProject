@@ -16,6 +16,7 @@ namespace BlogProject.Data
       public DbSet<TagPost> TagPost { get; set; } = null;
       public DbSet<Role> Role { get; set; } = null;
       public DbSet<UserRole> UserRole { get; set; } = null;
+
       protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
       {
          var appDir = Environment.CurrentDirectory;

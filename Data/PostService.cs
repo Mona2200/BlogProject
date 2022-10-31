@@ -11,21 +11,25 @@ namespace BlogProject.Data
       private readonly TagPostService _tagPostService = new TagPostService();
       private readonly TagService _tagService = new TagService();
       private readonly CommentService _commentService = new CommentService();
+
       public async Task<Post[]> GetPosts()
       {
          var posts = await _db.Post.ToArrayAsync();
          return posts;
       }
+
       public async Task<Post> GetPostById(Guid id)
       {
          var post = await _db.Post.Where(p => p.Id == id).FirstOrDefaultAsync();
          return post;
       }
+
       public async Task<Post[]> GetPostByUserId(Guid id)
       {
          var post = await _db.Post.Where(p => p.UserId == id).ToArrayAsync();
          return post;
       }
+
       public async Task<PostViewModel> GetPostViewModelById(Guid id)
       {
          var post = await GetPostById(id);
@@ -40,6 +44,7 @@ namespace BlogProject.Data
          postViewModel.User = await _db.User.Where(u => u.Id == post.UserId).FirstOrDefaultAsync();
          return postViewModel;
       }
+
       public async Task<PostViewModel[]> GetPostsViewModel(Post[] posts)
       {
          var postViewModels = new PostViewModel[posts.Length];
@@ -57,18 +62,21 @@ namespace BlogProject.Data
          }
          return postViewModels;
       }
+
       public async Task<PostViewModel[]> GetPostsViewModelByUserId(Guid userId)
       {
          var posts = await GetPostByUserId(userId);
          var postViewModels = await GetPostsViewModel(posts);
          return postViewModels;
       }
+
       public async Task<PostViewModel[]> GetPostsViewModelAll()
       {
          var posts = await GetPosts();
          var postViewModels = await GetPostsViewModel(posts);
          return postViewModels;
       }
+
       public async Task Save(Post post, Guid[] tagIds)
       {
          var entry = _db.Entry(post);
@@ -77,6 +85,7 @@ namespace BlogProject.Data
          await _tagPostService.Save(post.Id, tagIds);
          await _db.SaveChangesAsync();
       }
+
       public async Task Update(Post updatePost, Post newPost, Guid[] tagIds)
       {
          updatePost.Title = newPost.Title;
@@ -88,6 +97,7 @@ namespace BlogProject.Data
          await _tagPostService.Update(updatePost.Id, tagIds);
          await _db.SaveChangesAsync();
       }
+
       public async Task Delete(Post post)
       {
          _db.Post.Remove(post);

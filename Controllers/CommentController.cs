@@ -18,11 +18,13 @@ namespace BlogProject.Controllers
       private readonly CommentService _commentService = new CommentService();
       private readonly PostService _postService = new PostService();
       private readonly TagService _tagService = new TagService();
+
       public CommentController(ILogger<CommentController> logger, IMapper mapper)
       {
          _logger = logger;
          _mapper = mapper;
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetComments")]
@@ -31,6 +33,7 @@ namespace BlogProject.Controllers
          var comments = await _commentService.GetComments();
          return comments;
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetCommentById")]
@@ -39,6 +42,7 @@ namespace BlogProject.Controllers
          var comment = await _commentService.GetCommentById(id);
          return comment;
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetAllComments")]
@@ -52,6 +56,7 @@ namespace BlogProject.Controllers
          commentsViewModel = commentsViewModel.Reverse().ToArray();
          return View(commentsViewModel);
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("AddComment")]
@@ -61,6 +66,7 @@ namespace BlogProject.Controllers
          comment.Post = await _postService.GetPostViewModelById(postId);
          return View(comment);
       }
+
       [Authorize(Roles = "user")]
       [HttpPost]
       [Route("AddComment")]
@@ -79,6 +85,7 @@ namespace BlogProject.Controllers
          await _commentService.Save(comment);
          return RedirectToAction("AddComment", "Comment", new { postId = postId });
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       public async Task<IActionResult> GetEditComment(Guid commentId, Guid postId)
@@ -96,6 +103,7 @@ namespace BlogProject.Controllers
 
          return View("EditComment", commentViewModel);
       }
+
       [Authorize(Roles = "user")]
       [HttpPost]
       [Route("EditComment")]
@@ -120,6 +128,7 @@ namespace BlogProject.Controllers
          }
          return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("DeleteComment")]
@@ -140,7 +149,7 @@ namespace BlogProject.Controllers
             await _commentService.Delete(comment);
             return RedirectToAction("AddComment", new { postId = postId });
          }
-         return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён"});
+         return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
       }
    }
 }

@@ -14,11 +14,13 @@ namespace BlogProject.Controllers
       private readonly ILogger<TagController> _logger;
       private readonly IMapper _mapper;
       private readonly TagService _tagService = new TagService();
+
       public TagController(ILogger<TagController> logger, IMapper mapper)
       {
          _logger = logger;
          _mapper = mapper;
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetTags")]
@@ -27,6 +29,7 @@ namespace BlogProject.Controllers
          var tags = await _tagService.GetTags();
          return tags;
       }
+
       [Authorize(Roles = "moder")]
       [HttpGet]
       [Route("GetAllTags")]
@@ -38,6 +41,7 @@ namespace BlogProject.Controllers
 
          return View("AllTags", tagViewModel);
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetTagById")]
@@ -46,6 +50,7 @@ namespace BlogProject.Controllers
          var tag = await _tagService.GetTagById(id);
          return tag;
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetTagByPostId")]
@@ -54,6 +59,7 @@ namespace BlogProject.Controllers
          var tags = await _tagService.GetTagByPostId(id);
          return tags;
       }
+
       [Authorize(Roles = "user")]
       [HttpPost]
       [Route("Form")]
@@ -65,6 +71,7 @@ namespace BlogProject.Controllers
             post.AllTags = allTags;
             return View("AddTag", post);
       }
+
       [Authorize(Roles = "user")]
       [HttpPost]
       [Route("AddTag")]
@@ -77,6 +84,7 @@ namespace BlogProject.Controllers
          model.AllTags = allTags;
          return View(model);
       }
+
       [Authorize(Roles = "moder")]
       [HttpPost]
       [Route("EditTag")]
@@ -89,6 +97,7 @@ namespace BlogProject.Controllers
          await _tagService.Update(editTag, newTag);
          return RedirectToAction("GetAllTags");
       }
+
       [Authorize(Roles = "moder")]
       [HttpGet]
       [Route("DeleteTag")]

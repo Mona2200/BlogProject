@@ -22,11 +22,13 @@ namespace BlogProject.Controllers
       private readonly TagService _tagService = new TagService();
       private readonly CommentService _commentService = new CommentService();
       private readonly RoleService _roleService = new RoleService();
+
       public UserController(ILogger<UserController> logger, IMapper mapper)
       {
          _logger = logger;
          _mapper = mapper;
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       public async Task<IActionResult> Main()
@@ -54,6 +56,7 @@ namespace BlogProject.Controllers
          var users = await _userService.GetUsers();
          return users;
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetAllUsers")]
@@ -73,6 +76,7 @@ namespace BlogProject.Controllers
          }
          return View(userViewModels);
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("GetUserById")]
@@ -115,6 +119,7 @@ namespace BlogProject.Controllers
 
          return RedirectToAction("Main");
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("Edit")]
@@ -129,6 +134,7 @@ namespace BlogProject.Controllers
          var user = _mapper.Map<User, RegisterViewModel>(editUser);
          return View(user);
       }
+
       [Authorize(Roles = "user")]
       [HttpPost]
       [Route("Edit")]
@@ -154,6 +160,7 @@ namespace BlogProject.Controllers
 
          return RedirectToRoute(new { controller = "User", action = "Main" });
       }
+
       [Authorize(Roles = "user")]
       [HttpGet]
       [Route("DeleteUser")]
@@ -172,6 +179,7 @@ namespace BlogProject.Controllers
 
          return RedirectToAction("Index", "Home");
       }
+
       [Authorize(Roles = "admin")]
       [HttpGet]
       [Route("DeleteUserByAdmin")]

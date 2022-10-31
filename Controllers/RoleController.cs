@@ -14,11 +14,13 @@ namespace BlogProject.Controllers
       private readonly IMapper _mapper;
       private readonly RoleService _roleService = new RoleService();
       private readonly UserService _userService = new UserService();
+
       public RoleController(ILogger<UserController> logger, IMapper mapper)
       {
          _logger = logger;
          _mapper = mapper;
       }
+
       [Authorize(Roles = "admin")]
       [HttpPost]
       [Route("AddRole")]
@@ -27,6 +29,7 @@ namespace BlogProject.Controllers
          await _roleService.Create(role);
          return Ok();
       }
+
       [Authorize(Roles = "admin")]
       [HttpGet]
       [Route("AddAdminRoleToUser")]
@@ -45,6 +48,7 @@ namespace BlogProject.Controllers
 
          return RedirectToAction("GetAllUsers", "User");
       }
+
       [Authorize(Roles = "admin")]
       [HttpGet]
       [Route("AddModerRoleToUser")]
@@ -63,6 +67,7 @@ namespace BlogProject.Controllers
 
          return RedirectToAction("GetAllUsers", "User");
       }
+
       [Authorize(Roles = "admin")]
       [HttpGet]
       [Route("GetRoleAdmin")]
