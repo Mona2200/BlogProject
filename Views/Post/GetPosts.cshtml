@@ -26,10 +26,7 @@
                     <h4 class="text-white">@post.Title</h4>
                     <p class="text-white">@post.Content</p>
                     <p class="w-75">
-                        @foreach (var tag in post.Tags)
-                        {
-                            <span class="tag m-1 p-1">@tag.Name</span>
-                        }
+                        <partial name="~/Views/Tag/GetTags.cshtml" model="@post.Tags"></partial>
                     </p>
                     <div class="d-flex justify-content-end">
                         <p class="position-absolute color-main translateY-100">

@@ -1,0 +1,21 @@
+﻿@using BlogProject.ViewModels.Request
+@model FormPostViewModel
+
+@foreach (var allTag in Model.AllTags)
+{
+    @if (Model.TagIds != null)
+    {
+        @if (Model.TagIds.Contains(allTag.Id.ToString()))
+        {
+            <p class="col-lg-4"><input type="checkbox" checked value="@allTag.Id">@allTag.Name</p>
+        }
+        else
+        {
+            <p class="col-lg-4"><input type="checkbox" value="@allTag.Id">@allTag.Name</p>
+        }
+    }
+    else
+    {
+        <p class="col-lg-4"><input type="checkbox" value="@allTag.Id">@allTag.Name</p>
+    }
+}

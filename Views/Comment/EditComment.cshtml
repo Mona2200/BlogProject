@@ -14,21 +14,10 @@
                 <h4 class="text-white">@Model.Post.Title</h4>
                 <p class="text-white">@Model.Post.Content</p>
                 <p class="w-75">
-                    @foreach (var tag in Model.Post.Tags)
-                    {
-                        <span class="tag m-1 p-1">@tag.Name</span>
-                    }
+                    <partial name="~/Views/Tag/GetTags.cshtml" model="@Model.Post.Tags"></partial>
                 </p>
                 <div class="comments">
-                    @foreach (var comment in Model.Post.Comments)
-                    {
-                        <div class="row flex-row-reverse">
-                            <div class="col-lg-6 text-end border-1 border-white p-2 br-20 mt-1 m-lg-4 m-md-2 m-sm-0">
-                                <p class="fw-bold">@comment.User.FirstName</p>
-                                <p>@comment.Content</p>
-                            </div>
-                        </div>
-                    }
+                    <partial name="~/Views/Comment/GetComments.cshtml" model="@Model.Post.Comments"></partial>
                 </div>
                 <input class="d-none" asp-for="@Model.Post.Id" value="@Model.Post.Id" readonly />
                 <input class="d-none" asp-for="@Model.Id" value="@Model.Id" readonly />

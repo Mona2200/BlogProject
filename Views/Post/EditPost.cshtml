@@ -26,24 +26,7 @@
         <div class="row">
             <div class="col-lg-8 m-auto">
                 <div class="row w-75 m-auto" id="ExistsTags">
-                    @foreach (var allTag in Model.AllTags)
-                    {
-                        @if (Model.TagIds != null)
-                        {
-                            @if (Model.TagIds.Contains(allTag.Id.ToString()))
-                            {
-                                <p class="col-lg-4"><input type="checkbox" checked value="@allTag.Id">@allTag.Name</p>
-                            }
-                            else
-                            {
-                                <p class="col-lg-4"><input type="checkbox" value="@allTag.Id">@allTag.Name</p>
-                            }
-                        }
-                        else
-                        {
-                            <p class="col-lg-4"><input type="checkbox" value="@allTag.Id">@allTag.Name</p>
-                        }
-                    }
+                    <partial name="~/Views/Tag/CheckboxTags.cshtml" model="@Model"></partial>
                 </div>
             </div>
         </div>
@@ -56,19 +39,8 @@
     </form>
 </div>
 
-<div id="AddFormsTags" class="hide">
-    <h3 class="text-white text-center">Создайте тег</h3>
-    <form class="container d-flex flex-column justify-center" method="post" asp-controller="Tag" asp-action="AddTag">
-        <p class="w-100"><input class="input form-control-plaintext w-50" asp-for="@Model.AddTag.Name" value="" /></p>
-        <span asp-validation-for="@Model.AddTag.Name" class="text-danger"></span>
-        <p class="opacity-0 d-none"><input asp-for="@Model.Post.Title" value="@Title" readonly /></p>
-        <p class="opacity-0 d-none"><textarea asp-for="@Model.Post.Content" value="@Content" readonly></textarea></p>
-        <div class="opacity-0 d-none"><input id="TagsHide" type="text" asp-for="@Model.TagIds" value="@TagIds" /></div>
-        <div class="row">
-            <button class="col-lg-2 p-2 col-md-6 col-sm-10 button h-50 m-auto">Добавить тег</button>
-        </div>
-    </form>
-</div>
+<partial name="~/Views/Tag/CreateTag.cshtml" model="@Model"></partial>
+
 <div class="row justify-content-center">
     <div class="col-lg-5 text-center">
         <a class="pointer linkRemove">Удалить публикацию</a>

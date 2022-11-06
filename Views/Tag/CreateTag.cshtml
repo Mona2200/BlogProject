@@ -1,0 +1,16 @@
+﻿@using BlogProject.ViewModels.Request
+@model FormPostViewModel
+
+<div id="AddFormsTags" class="hide">
+    <h3 class="text-white text-center">Создайте тег</h3>
+    <form class="container d-flex flex-column justify-center" method="post" asp-controller="Tag" asp-action="AddTag">
+        <p class="w-100"><input class="input form-control-plaintext w-50" asp-for="@Model.AddTag.Name" value="" /></p>
+        <span asp-validation-for="@Model.AddTag.Name" class="text-danger"></span>
+        <p class="opacity-0 d-none"><input asp-for="@Model.Post.Title" value="@Model.Post.Title" readonly /></p>
+        <p class="opacity-0 d-none"><textarea asp-for="@Model.Post.Content" value="@Model.Post.Content" readonly></textarea></p>
+        <div class="opacity-0 d-none"><input id="TagsHide" type="text" asp-for="@Model.TagIds" value="@Model.TagIds" /></div>
+        <div class="row">
+            <button class="col-lg-2 p-2 col-md-6 col-sm-10 button h-50 m-auto">Добавить тег</button>
+        </div>
+    </form>
+</div>
