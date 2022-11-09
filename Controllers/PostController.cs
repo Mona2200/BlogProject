@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Data;
 using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BlogProject.Controllers
 {
@@ -24,6 +25,8 @@ namespace BlogProject.Controllers
       public PostController(ILogger<PostController> logger, IMapper mapper)
       {
          _logger = logger;
+         _logger.LogDebug(1, "NLog находится внутри PostController");
+
          _mapper = mapper;
       }
 
@@ -35,6 +38,13 @@ namespace BlogProject.Controllers
          var postViewModels = await _postService.GetPostsViewModelAll();
 
          var getPosts = new GetPostsViewModel() { posts = postViewModels.Reverse().ToArray() };
+
+
+         ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
+         var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
+         var user = await _userService.GetUserByEmail(claimEmail);
+
+         _logger.LogInformation($"Пользователь {user.Id} просматривает все публикации.");
 
          return View(getPosts);
       }
@@ -82,6 +92,9 @@ namespace BlogProject.Controllers
          var post = _mapper.Map<AddPostViewModel, Post>(view);
          post.UserId = userId;
          await _postService.Save(post, tagIds);
+
+         _logger.LogInformation($"Пользователь {user.Id} добавляет новую публикацию.");
+
          return RedirectToAction("Main", "User");
       }
 
@@ -111,10 +124,16 @@ namespace BlogProject.Controllers
                post.TagIds += tag + " ";
             }
 
+            _logger.LogInformation($"Пользователь {user.Id} открывает форму редактирования публикации {postId}.");
+
             return View(post);
          }
          else
+         {
+            _logger.LogInformation($"Пользователю {user.Id} не удалось открыть форму редактирования публикации {postId}, т. к. он не является её создателем.");
+
             return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
+         }
       }
 
       [Authorize(Roles = "user")]
@@ -132,14 +151,24 @@ namespace BlogProject.Controllers
          {
             var editPost = await _postService.GetPostById(model.postId);
             if (editPost == null)
+            {
+               _logger.LogInformation($"Пользователю {user.Id} не удалось отредактировать публикацию {model.postId}, т. к. публикация не была найдена.");
+
                return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+            }
+
             var newPost = _mapper.Map<AddPostViewModel, Post>(model.Post);
 
             Guid[] tagIds = model.TagIds.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(t => Guid.Parse(t)).ToArray();
 
             await _postService.Update(editPost, newPost, tagIds);
+
+            _logger.LogInformation($"Пользователь {user.Id} редактирует свою публикацию {model.postId}.");
+
             return RedirectToAction("Main", "User");
          }
+         _logger.LogInformation($"Пользователю {user.Id} не удалось отредактировать публикацию {model.postId}, т. к. публикация не была найдена среди публикаций пользователя.");
+
          return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
       }
 
@@ -158,10 +187,20 @@ namespace BlogProject.Controllers
          {
             var post = await _postService.GetPostById(id);
             if (post == null)
+            {
+               _logger.LogInformation($"Пользователю {user.Id} не удалось удалить публикацию {id}, т. к. публикация не была найдена.");
+
                return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+            }
+
             await _postService.Delete(post);
+
+            _logger.LogInformation($"Пользователь {user.Id} удалил публикацию {id}.");
+
             return RedirectToAction("Main", "User");
          }
+         _logger.LogInformation($"Пользователю {user.Id} не удалось удалить публикацию {id}, т. к. публикация не была найдена среди его публикаций и он не является модератором.");
+
          return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
       }
    }

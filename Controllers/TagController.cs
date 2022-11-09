@@ -9,7 +9,7 @@ using System.Data;
 
 namespace BlogProject.Controllers
 {
-    public class TagController : Controller
+   public class TagController : Controller
    {
       private readonly ILogger<TagController> _logger;
       private readonly IMapper _mapper;
@@ -18,6 +18,8 @@ namespace BlogProject.Controllers
       public TagController(ILogger<TagController> logger, IMapper mapper)
       {
          _logger = logger;
+         _logger.LogDebug(1, "NLog находится внутри TagController");
+
          _mapper = mapper;
       }
 
@@ -38,6 +40,8 @@ namespace BlogProject.Controllers
          var tags = await _tagService.GetTags();
          var tagViewModel = new TagViewModel();
          tagViewModel.Tags = await _tagService.GetTags();
+
+         _logger.LogInformation($"Модератор просматривает все теги.");
 
          return View("AllTags", tagViewModel);
       }
@@ -65,11 +69,14 @@ namespace BlogProject.Controllers
       [Route("Form")]
       public async Task<IActionResult> Form(AddPostViewModel view)
       {
-            var allTags = await GetTags();
-            var post = new FormPostViewModel();
-            post.Post = view;
-            post.AllTags = allTags;
-            return View("AddTag", post);
+         var allTags = await GetTags();
+         var post = new FormPostViewModel();
+         post.Post = view;
+         post.AllTags = allTags;
+
+         _logger.LogInformation($"Пользователь добавляет теги к своей публикации.");
+
+         return View("AddTag", post);
       }
 
       [Authorize(Roles = "user")]
@@ -82,6 +89,9 @@ namespace BlogProject.Controllers
          await _tagService.Save(tag);
          var allTags = await GetTags();
          model.AllTags = allTags;
+
+         _logger.LogInformation($"Пользователь создаёт тег.");
+
          return View(model);
       }
 
@@ -92,9 +102,17 @@ namespace BlogProject.Controllers
       {
          var editTag = await _tagService.GetTagById(view.TagId);
          if (editTag == null)
+         {
+            _logger.LogInformation($"Модератору не удалось отредактировать тег, т. к. тег не был найден.");
+
             return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+         }
+
          var newTag = new Tag() { Id = view.TagId, Name = view.TagName };
          await _tagService.Update(editTag, newTag);
+
+         _logger.LogInformation($"Модератор редактирует тег.");
+
          return RedirectToAction("GetAllTags");
       }
 
@@ -105,8 +123,16 @@ namespace BlogProject.Controllers
       {
          var tag = await _tagService.GetTagById(id);
          if (tag == null)
+         {
+            _logger.LogInformation($"Модератору не удалось удалить тег, т. к. тег не был найден.");
+
             return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+         }
+
          await _tagService.Delete(tag);
+
+         _logger.LogInformation($"Модератор удалил тег.");
+
          return RedirectToAction("GetAllTags");
       }
    }

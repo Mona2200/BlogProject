@@ -22,6 +22,8 @@ namespace BlogProject.Controllers
       public CommentController(ILogger<CommentController> logger, IMapper mapper)
       {
          _logger = logger;
+         _logger.LogDebug(1, "NLog находится внутри CommentController");
+
          _mapper = mapper;
       }
 
@@ -54,6 +56,9 @@ namespace BlogProject.Controllers
 
          var commentsViewModel = await _commentService.GetCommentsViewModelByUserId(user.Id);
          commentsViewModel = commentsViewModel.Reverse().ToArray();
+
+         _logger.LogInformation($"Пользователь {user.Id} просматривает свои комментарии.");
+
          return View(commentsViewModel);
       }
 
@@ -83,6 +88,9 @@ namespace BlogProject.Controllers
          comment.UserId = userId;
          comment.PostId = postId;
          await _commentService.Save(comment);
+
+         _logger.LogInformation($"Пользователь {userId} добавляет комментарий к публикации {postId}.");
+
          return RedirectToAction("AddComment", "Comment", new { postId = postId });
       }
 
@@ -97,7 +105,12 @@ namespace BlogProject.Controllers
 
          var comment = await GetCommentById(commentId);
          if (comment == null)
+         {
+            _logger.LogInformation($"Пользователю {user.Id} не удалось открыть форму редактирования комментария {commentId}, т.к. комментарий не был найден.");
+
             return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+         }
+   
          var commentViewModel = _mapper.Map<Comment, AddCommentViewModel>(comment);
          commentViewModel.Post = await _postService.GetPostViewModelById(postId);
 
@@ -120,12 +133,21 @@ namespace BlogProject.Controllers
          {
             var comment = await GetCommentById(view.Id);
             if (comment == null)
+            {
+               _logger.LogInformation($"Пользователю {user.Id} не удалось отредактировать комментарий {view.Id}, т.к. комментарий не был найден.");
+               
                return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найдён" });
+            }
+
             var newComment = _mapper.Map<AddCommentViewModel, Comment>(view);
             await _commentService.Update(comment, newComment);
 
+            _logger.LogInformation($"Пользователь {user.Id} редактирует свой комментарий {comment.Id}.");
+
             return RedirectToAction("AddComment", new { postId = view.Post.Id });
          }
+         _logger.LogInformation($"Пользователю {user.Id} не удалось отредактировать комментарий {view.Id}, т.к. комментарий не был найден среди комментарией этого пользователя.");
+         
          return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
       }
 
@@ -145,10 +167,20 @@ namespace BlogProject.Controllers
          {
             var comment = await GetCommentById(commentId);
             if (comment == null)
+            {
+               _logger.LogInformation($"Пользователю {user.Id} не удалось удалить комментарий {commentId}, т. к. комментарий не был найден.");
+
                return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+            }
+
             await _commentService.Delete(comment);
+
+            _logger.LogInformation($"Пользователь {user.Id} удалил комментарий {comment.Id}.");
+
             return RedirectToAction("AddComment", new { postId = postId });
          }
+         _logger.LogInformation($"Пользователю {user.Id} не удалось удалить комментарий {commentId}, т. к. комментарий не был найден среди комментариев пользователя и он не является модератором.");
+
          return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
       }
    }

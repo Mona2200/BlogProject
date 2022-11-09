@@ -26,6 +26,8 @@ namespace BlogProject.Controllers
       public UserController(ILogger<UserController> logger, IMapper mapper)
       {
          _logger = logger;
+         _logger.LogDebug(1, "NLog находится внутри UserController");
+
          _mapper = mapper;
       }
 
@@ -37,6 +39,9 @@ namespace BlogProject.Controllers
          var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
          var user = await _userService.GetUserByEmail(claimEmail);
          var userViewModel = await GetUserById(user.Id);
+
+         _logger.LogInformation($"Пользователь {user.Id} зашёл в свой блог.");
+
          return View(userViewModel);
       }
 
@@ -45,6 +50,13 @@ namespace BlogProject.Controllers
       public async Task<IActionResult> MainUser(Guid userId)
       {
          var userViewModel = await GetUserById(userId);
+
+         ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
+         var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
+         var user = await _userService.GetUserByEmail(claimEmail);
+
+         _logger.LogInformation($"Пользователь {user.Id} зашёл в блог пользователя {userId}.");
+
          return View("Main", userViewModel);
       }
 
@@ -74,6 +86,13 @@ namespace BlogProject.Controllers
 
             j++;
          }
+
+         ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
+         var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
+         var userIdent = await _userService.GetUserByEmail(claimEmail);
+
+         _logger.LogInformation($"Пользователь {userIdent.Id} просматривает всех пользователей.");
+
          return View(userViewModels);
       }
 
@@ -117,6 +136,8 @@ namespace BlogProject.Controllers
          var claimsIdentity = new ClaimsIdentity(claims, "AppCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
          await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
+         _logger.LogInformation($"Регистрацию прошёл новый пользователь.");
+
          return RedirectToAction("Main");
       }
 
@@ -130,7 +151,12 @@ namespace BlogProject.Controllers
          var editUser = await _userService.GetUserByEmail(claimEmail);
 
          if (editUser == null)
+         {
+            _logger.LogInformation($"Пользователю не удалось открыть форму редактирования своего профиля.");
+
             return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Что-то пошло не так" });
+         }
+
          var user = _mapper.Map<User, RegisterViewModel>(editUser);
          return View(user);
       }
@@ -145,7 +171,12 @@ namespace BlogProject.Controllers
          var editUser = await _userService.GetUserByEmail(claimEmail);
 
          if (editUser == null)
+         {
+            _logger.LogInformation($"Пользователю не удалось отредактировать свой профиль.");
+
             return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Что-то пошло не так" });
+         }
+
          var newUser = _mapper.Map<RegisterViewModel, User>(view);
          await _userService.Update(editUser, newUser);
 
@@ -157,6 +188,8 @@ namespace BlogProject.Controllers
          ident.AddClaim(newClaimEmail);
          var claimsIdentity = new ClaimsIdentity(ident.Claims, "AppCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
          await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+         _logger.LogInformation($"Профиль пользователя {editUser.Id} обновлён.");
 
          return RedirectToRoute(new { controller = "User", action = "Main" });
       }
@@ -171,11 +204,18 @@ namespace BlogProject.Controllers
          var user = await _userService.GetUserByEmail(claimEmail);
 
          if (user == null)
+         {
+            _logger.LogInformation($"Пользователю не удалось удалить свой профиль.");
+
             return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Что-то пошло не так" });
+         }
+
          await _roleService.Delete(user.Id);
          await _userService.Delete(user);
 
          await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+         _logger.LogInformation($"Пользователь {user.Id} удалён.");
 
          return RedirectToAction("Index", "Home");
       }
@@ -187,9 +227,17 @@ namespace BlogProject.Controllers
       {
          var user = await _userService.GetUserById(id);
          if (user == null)
+         {
+            _logger.LogInformation($"Администратору не удалось удалить пользователя {user.Id}.");
+
             return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+         }
+
          await _roleService.Delete(user.Id);
          await _userService.Delete(user);
+
+         _logger.LogInformation($"Администратор удалил пользователя {user.Id}.");
+
          return RedirectToAction("GetAllUsers");
       }
    }

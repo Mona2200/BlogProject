@@ -18,6 +18,8 @@ namespace BlogProject.Controllers
       public RoleController(ILogger<UserController> logger, IMapper mapper)
       {
          _logger = logger;
+         _logger.LogDebug(1, "NLog находится внутри RoleController");
+
          _mapper = mapper;
       }
 
@@ -37,7 +39,11 @@ namespace BlogProject.Controllers
       {
          var user = await _userService.GetUserById(userId);
          if (user == null)
+         {
+            _logger.LogInformation($"Администратору не удалось добавить роль администратора для пользователя {userId}, т. к. пользователь не был найден.");
+
             return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+         }
 
          var roles = await _roleService.GetRoleByUserId(userId);
          if (roles.FirstOrDefault(r => r.Name == "admin") == null)
@@ -45,6 +51,8 @@ namespace BlogProject.Controllers
             var adminRole = await _roleService.GetRoleByName("admin");
             await _roleService.Save(userId, adminRole.Id);
          }
+
+         _logger.LogInformation($"Пользователь {userId} стал администратором.");
 
          return RedirectToAction("GetAllUsers", "User");
       }
@@ -56,7 +64,11 @@ namespace BlogProject.Controllers
       {
          var user = _userService.GetUserById(userId);
          if (user == null)
+         {
+            _logger.LogInformation($"Администратору не удалось добавить роль модератора для пользователя {userId}, т. к. пользователь не был найден.");
+
             return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+         }
 
          var roles = await _roleService.GetRoleByUserId(userId);
          if (roles.FirstOrDefault(r => r.Name == "moder") == null)
@@ -64,6 +76,8 @@ namespace BlogProject.Controllers
             var moderRole = await _roleService.GetRoleByName("moder");
             await _roleService.Save(userId, moderRole.Id);
          }
+
+         _logger.LogInformation($"Пользователь {userId} стал модератором.");
 
          return RedirectToAction("GetAllUsers", "User");
       }

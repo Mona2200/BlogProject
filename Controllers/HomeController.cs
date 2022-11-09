@@ -20,16 +20,25 @@ namespace BlogProject.Controllers
       public HomeController(ILogger<HomeController> logger)
       {
          _logger = logger;
+         _logger.LogDebug(1, "NLog находится внутри HomeController");
       }
 
-      public IActionResult Index()
+      public async Task<IActionResult> Index()
       {
          if (HttpContext.User.Identity.IsAuthenticated)
          {
+            ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
+            var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
+            var user = await _userService.GetUserByEmail(claimEmail);
+
+            _logger.LogInformation($"Пользователь {user.Id} зашёл в приложение.");
+
             return RedirectToRoute(new { controller = "User", action = "Main" });
          }
          else
          {
+            _logger.LogInformation($"Неизвестный пользователь зашёл в приложение.");
+
             return View();
          }
       }
@@ -71,6 +80,8 @@ namespace BlogProject.Controllers
          var claimsIdentity = new ClaimsIdentity(claims, "AppCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
          await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
+         _logger.LogInformation($"Пользователь {user.Id} авторизовался.");
+
          return RedirectToRoute(new { controller = "User", action = "Main" });
       }
 
@@ -78,6 +89,12 @@ namespace BlogProject.Controllers
       [Route("Logout")]
       public async Task<IActionResult> Logout()
       {
+         ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
+         var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
+         var user = await _userService.GetUserByEmail(claimEmail);
+
+         _logger.LogInformation($"Пользователь {user.Id} вышел из аккаунта.");
+
          await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
          return RedirectToAction("Index", "Home");
       }
