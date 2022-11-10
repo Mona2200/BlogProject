@@ -116,7 +116,7 @@ namespace BlogProject.Controllers
          {
             _logger.LogInformation($"Пользователю {user.Id} не удалось открыть форму редактирования комментария {commentId}, т.к. комментарий не был найден.");
 
-            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+            return View("~/Views/Errors/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
          }
    
          var commentViewModel = _mapper.Map<Comment, AddCommentViewModel>(comment);
@@ -152,7 +152,7 @@ namespace BlogProject.Controllers
             {
                _logger.LogInformation($"Пользователю {user.Id} не удалось отредактировать комментарий {view.Id}, т.к. комментарий не был найден.");
                
-               return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найдён" });
+               return View("~/Views/Errors/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найдён" });
             }
 
             var newComment = _mapper.Map<AddCommentViewModel, Comment>(view);
@@ -164,7 +164,7 @@ namespace BlogProject.Controllers
          }
          _logger.LogInformation($"Пользователю {user.Id} не удалось отредактировать комментарий {view.Id}, т.к. комментарий не был найден среди комментарией этого пользователя.");
          
-         return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
+         return View("~/Views/Errors/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
       }
 
       [Authorize(Roles = "user")]
@@ -186,7 +186,7 @@ namespace BlogProject.Controllers
             {
                _logger.LogInformation($"Пользователю {user.Id} не удалось удалить комментарий {commentId}, т. к. комментарий не был найден.");
 
-               return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+               return View("~/Views/Errors/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
             }
 
             await _commentService.Delete(comment);
@@ -197,7 +197,7 @@ namespace BlogProject.Controllers
          }
          _logger.LogInformation($"Пользователю {user.Id} не удалось удалить комментарий {commentId}, т. к. комментарий не был найден среди комментариев пользователя и он не является модератором.");
 
-         return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
+         return View("~/Views/Errors/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Доступ запрещён" });
       }
    }
 }

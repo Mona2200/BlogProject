@@ -52,8 +52,6 @@ namespace BlogProject.Controllers
       [Route("Authenticate")]
       public async Task<IActionResult> Authenticate(LoginViewModel model)
       {
-         if (String.IsNullOrEmpty(model.Email) || String.IsNullOrEmpty(model.Password))
-            return View("Index");
          var user = await _userService.GetUserByEmail(model.Email);
          if (user == null)
          {

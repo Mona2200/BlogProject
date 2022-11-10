@@ -3,7 +3,15 @@
 
 @{
     ViewData["Title"] = "Ошибка";
-    Layout = "_Layout";
+    string error;
+}
+@if (Model == null)
+{
+    error = "Что-то пошло не так.";
+}
+else
+{
+    error = Model.ErrorMessage;
 }
 
-<h1 class="text-white text-center">@Model.ErrorMessage</h1>
+<h1 class="text-white text-center">@error</h1>

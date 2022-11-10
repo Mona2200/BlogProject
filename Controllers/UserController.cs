@@ -40,8 +40,6 @@ namespace BlogProject.Controllers
          var user = await _userService.GetUserByEmail(claimEmail);
          var userViewModel = await GetUserById(user.Id);
 
-         _logger.LogInformation($"Пользователь {user.Id} зашёл в свой блог.");
-
          return View(userViewModel);
       }
 
@@ -172,7 +170,7 @@ namespace BlogProject.Controllers
          {
             _logger.LogInformation($"Пользователю не удалось открыть форму редактирования своего профиля.");
 
-            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Что-то пошло не так" });
+            return View("~/Views/Errors/Error.cshtml");
          }
 
          var user = _mapper.Map<User, RegisterViewModel>(editUser);
@@ -201,7 +199,7 @@ namespace BlogProject.Controllers
          {
             _logger.LogInformation($"Пользователю не удалось отредактировать свой профиль.");
 
-            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Что-то пошло не так" });
+            return View("~/Views/Errors/Error.cshtml");
          }
 
          var newUser = _mapper.Map<RegisterViewModel, User>(view);
@@ -234,7 +232,7 @@ namespace BlogProject.Controllers
          {
             _logger.LogInformation($"Пользователю не удалось удалить свой профиль.");
 
-            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Что-то пошло не так" });
+            return View("~/Views/Errors/Error.cshtml");
          }
 
          await _roleService.Delete(user.Id);
@@ -257,7 +255,7 @@ namespace BlogProject.Controllers
          {
             _logger.LogInformation($"Администратору не удалось удалить пользователя {user.Id}.");
 
-            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+            return View("~/Views/Errors/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
          }
 
          await _roleService.Delete(user.Id);

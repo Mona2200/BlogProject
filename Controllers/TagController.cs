@@ -123,7 +123,7 @@ namespace BlogProject.Controllers
          {
             _logger.LogInformation($"Модератору не удалось отредактировать тег, т. к. тег не был найден.");
 
-            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+            return View("~/Views/Errors/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
          }
 
          var newTag = new Tag() { Id = view.TagId, Name = view.TagName };
@@ -144,7 +144,7 @@ namespace BlogProject.Controllers
          {
             _logger.LogInformation($"Модератору не удалось удалить тег, т. к. тег не был найден.");
 
-            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+            return View("~/Views/Errors/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
          }
 
          await _tagService.Delete(tag);

@@ -42,7 +42,7 @@ namespace BlogProject.Controllers
          {
             _logger.LogInformation($"Администратору не удалось добавить роль администратора для пользователя {userId}, т. к. пользователь не был найден.");
 
-            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+            return View("~/Views/Errors/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
          }
 
          var roles = await _roleService.GetRoleByUserId(userId);
@@ -67,7 +67,7 @@ namespace BlogProject.Controllers
          {
             _logger.LogInformation($"Администратору не удалось добавить роль модератора для пользователя {userId}, т. к. пользователь не был найден.");
 
-            return View("~/Views/Error/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
+            return View("~/Views/Errors/Error.cshtml", new ErrorViewModel() { ErrorMessage = "Ресурс не найден" });
          }
 
          var roles = await _roleService.GetRoleByUserId(userId);
