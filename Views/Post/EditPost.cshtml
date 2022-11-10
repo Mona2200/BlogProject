@@ -19,7 +19,9 @@
             <div class="col-lg-8 m-3 d-flex flex-column justify-content-center">
                 <p class="d-none"><input class="input text-center form-control-plaintext w-75" asp-for="@Model.postId" value="@Model.postId" readonly /></p>
                 <p class="w-100"><input class="input text-center form-control-plaintext w-75" asp-for="@Model.Post.Title" value="@Title" /></p>
+                <span asp-validation-for="@Model.Post.Title" class="text-danger text-center"></span>
                 <p class="w-100"><textarea class="textarea form-control-plaintext w-75" asp-for="@Model.Post.Content" value="@Content" rows="8"></textarea></p>
+                <span asp-validation-for="@Model.Post.Content" class="text-danger text-center"></span>
                 <div class="opacity-0 d-none"><input id="Tags" type="text" asp-for="@Model.TagIds" value="@TagIds" /></div>
             </div>
         </div>

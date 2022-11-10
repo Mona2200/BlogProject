@@ -45,7 +45,7 @@ namespace BlogProject.Controllers
 
       public IActionResult Register()
       {
-         return View();
+         return RedirectToRoute(new { controller = "User", action = "Register" });
       }
 
       [HttpGet]

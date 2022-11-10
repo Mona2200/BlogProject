@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Hosting;
 using System.Data;
 using System.Security.Claims;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -141,6 +142,20 @@ namespace BlogProject.Controllers
       [Route("EditPost")]
       public async Task<IActionResult> EditPost(FormPostViewModel model)
       {
+         if (ModelState["Post.Title"].Errors.Count > 0)
+         {
+            ModelState.AddModelError("Post.Title", $"{ModelState["Post.Title"].Errors[0].ErrorMessage}");
+            model.AllTags = await _tagService.GetTags();
+            return View(model);
+         }
+
+         if (ModelState["Post.Content"].Errors.Count > 0)
+         {
+            ModelState.AddModelError("Post.Content", $"{ModelState["Post.Content"].Errors[0].ErrorMessage}");
+            model.AllTags = await _tagService.GetTags();
+            return View(model);
+         }
+
          ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
          var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
          var claimRoles = ident.Claims.Where(u => u.Type == ClaimTypes.Role).ToArray();

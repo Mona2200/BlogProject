@@ -113,32 +113,50 @@ namespace BlogProject.Controllers
          return userViewModel;
       }
 
+      [HttpGet]
+      [Route("Register")]
+      public IActionResult Register()
+      {
+         return View();
+      }
+
       [HttpPost]
       [Route("Register")]
       public async Task<IActionResult> Register(RegisterViewModel view)
       {
-         var user = _mapper.Map<RegisterViewModel, User>(view);
-         var role = await _roleService.GetRoleByName("user");
-         await _roleService.Save(user.Id, role.Id);
-         await _userService.Save(user);
+         if (!ModelState.IsValid)
+         {
+            foreach (var key in ModelState.Keys)
+            {
+               if (ModelState[key].Errors.Count > 0)
+                  ModelState.AddModelError($"{key}", $"{ModelState[key].Errors[0].ErrorMessage}");
+            }
 
-         var newUser = await _userService.GetUserByEmail(view.Email);
-         var newRoles = await _roleService.GetRoleByUserId(newUser.Id);
+            return View();
+         }
+            var user = _mapper.Map<RegisterViewModel, User>(view);
+            var role = await _roleService.GetRoleByName("user");
+            await _roleService.Save(user.Id, role.Id);
+            await _userService.Save(user);
 
-         var claims = new List<Claim>
+            var newUser = await _userService.GetUserByEmail(view.Email);
+            var newRoles = await _roleService.GetRoleByUserId(newUser.Id);
+
+            var claims = new List<Claim>
             {
             new Claim(ClaimsIdentity.DefaultNameClaimType, newUser.Email)
             };
 
-         for (int i = 0; i < newRoles.Length; i++)
-            claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, newRoles[i].Name));
+            for (int i = 0; i < newRoles.Length; i++)
+               claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, newRoles[i].Name));
 
-         var claimsIdentity = new ClaimsIdentity(claims, "AppCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+            var claimsIdentity = new ClaimsIdentity(claims, "AppCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
-         _logger.LogInformation($"Регистрацию прошёл новый пользователь.");
+            _logger.LogInformation($"Регистрацию прошёл новый пользователь.");
 
-         return RedirectToAction("Main");
+            return RedirectToAction("Main");
+         
       }
 
       [Authorize(Roles = "user")]
@@ -166,6 +184,15 @@ namespace BlogProject.Controllers
       [Route("Edit")]
       public async Task<IActionResult> Edit(RegisterViewModel view)
       {
+         if (!ModelState.IsValid)
+         {
+            foreach (var key in ModelState.Keys)
+            {
+               if (ModelState[key].Errors.Count > 0)
+                  ModelState.AddModelError($"{key}", $"{ModelState[key].Errors[0].ErrorMessage}");
+            }
+            return View(view);
+         }
          ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
          var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
          var editUser = await _userService.GetUserByEmail(claimEmail);

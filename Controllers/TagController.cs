@@ -69,6 +69,16 @@ namespace BlogProject.Controllers
       [Route("Form")]
       public async Task<IActionResult> Form(AddPostViewModel view)
       {
+         if (!ModelState.IsValid)
+         {
+            foreach (var key in ModelState.Keys)
+            {
+               if (ModelState[key].Errors.Count > 0)
+                  ModelState.AddModelError($"{key}", $"{ModelState[key].Errors[0].ErrorMessage}");
+            }
+            return View("~/Views/Post/AddPost.cshtml", view);
+         }
+
          var allTags = await GetTags();
          var post = new FormPostViewModel();
          post.Post = view;
@@ -84,6 +94,14 @@ namespace BlogProject.Controllers
       [Route("AddTag")]
       public async Task<IActionResult> AddTag(FormPostViewModel model)
       {
+         if (ModelState["AddTag.Name"].Errors.Count() > 0)
+         {
+            ModelState.AddModelError("AddTag.Name", $"{ModelState["AddTag.Name"].Errors[0].ErrorMessage}");
+            var all = await GetTags();
+            model.AllTags = all;
+            return View(model);
+         }
+
          var view = model.AddTag;
          var tag = _mapper.Map<AddTagViewModel, Tag>(view);
          await _tagService.Save(tag);

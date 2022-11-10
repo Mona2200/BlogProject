@@ -6,6 +6,7 @@ using BlogProject.ViewModels.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.Design;
 using System.Security.Claims;
 
 namespace BlogProject.Controllers
@@ -77,6 +78,13 @@ namespace BlogProject.Controllers
       [Route("AddComment")]
       public async Task<IActionResult> AddComment(AddCommentViewModel view)
       {
+         if (ModelState["Content"]?.Errors.Count > 0)
+         {
+            ModelState.AddModelError("Content", $"{ModelState["Content"].Errors[0].ErrorMessage}");
+            view.Post = await _postService.GetPostViewModelById(view.Post.Id);
+            return View(view);
+         }
+
          var postId = view.Post.Id;
 
          ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
@@ -122,6 +130,14 @@ namespace BlogProject.Controllers
       [Route("EditComment")]
       public async Task<IActionResult> EditComment(AddCommentViewModel view)
       {
+         if (ModelState["Content"]?.Errors.Count > 0)
+         {
+            ModelState.AddModelError("Content", $"{ModelState["Content"].Errors[0].ErrorMessage}");
+            var comment = await GetCommentById(view.Id);
+            var commentViewModel = _mapper.Map<Comment, AddCommentViewModel>(comment);
+            commentViewModel.Post = await _postService.GetPostViewModelById(view.Post.Id);
+            return View(commentViewModel);
+         }
          ClaimsIdentity ident = HttpContext.User.Identity as ClaimsIdentity;
          var claimEmail = ident.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name).Value;
          var claimRoles = ident.Claims.Where(u => u.Type == ClaimTypes.Role).ToArray();
