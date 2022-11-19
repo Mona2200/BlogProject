@@ -30,50 +30,48 @@ namespace BlogProject.Data
          return post;
       }
 
-      public async Task<PostViewModel> GetPostViewModelById(Guid id)
-      {
-         var post = await GetPostById(id);
-         var tags = await _tagService.GetTagByPostId(id);
-
-         var postViewModel = new PostViewModel();
-         postViewModel.Id = id;
-         postViewModel.Title = post.Title;
-         postViewModel.Content = post.Content;
-         postViewModel.Tags = tags;
-         postViewModel.Comments = await _commentService.GetCommentsViewModelByPostId(id);
-         postViewModel.User = await _db.User.Where(u => u.Id == post.UserId).FirstOrDefaultAsync();
-         return postViewModel;
-      }
-
-      public async Task<PostViewModel[]> GetPostsViewModel(Post[] posts)
+      private async Task<PostViewModel[]> FromPostsToPostViewModels(Post[] posts)
       {
          var postViewModels = new PostViewModel[posts.Length];
          int i = 0;
          foreach (var post in posts)
          {
-            postViewModels[i] = new PostViewModel();
-            postViewModels[i].Id = post.Id;
-            postViewModels[i].Title = post.Title;
-            postViewModels[i].Content = post.Content;
-            postViewModels[i].Tags = await _tagService.GetTagByPostId(post.Id);
-            postViewModels[i].Comments = await _commentService.GetCommentsViewModelByPostId(post.Id);
-            postViewModels[i].User = await _db.User.Where(u => u.Id == post.UserId).FirstOrDefaultAsync();
+            postViewModels[i] = await FromPostToPostViewModel(post);
             i++;
          }
          return postViewModels;
       }
 
-      public async Task<PostViewModel[]> GetPostsViewModelByUserId(Guid userId)
+      private async Task<PostViewModel> FromPostToPostViewModel(Post post)
       {
-         var posts = await GetPostByUserId(userId);
-         var postViewModels = await GetPostsViewModel(posts);
+         var postViewModels = new PostViewModel();
+         postViewModels.Id = post.Id;
+         postViewModels.Title = post.Title;
+         postViewModels.Content = post.Content;
+         postViewModels.Tags = await _tagService.GetTagByPostId(post.Id);
+         postViewModels.Comments = await _commentService.GetCommentsViewModelByPostId(post.Id);
+         postViewModels.User = await _db.User.Where(u => u.Id == post.UserId).FirstOrDefaultAsync();
          return postViewModels;
       }
 
-      public async Task<PostViewModel[]> GetPostsViewModelAll()
+      public async Task<PostViewModel[]> GetPostsViewModel()
       {
          var posts = await GetPosts();
-         var postViewModels = await GetPostsViewModel(posts);
+         var postViewModels = await FromPostsToPostViewModels(posts);
+         return postViewModels;
+      }
+
+      public async Task<PostViewModel> GetPostViewModelById(Guid id)
+      {
+         var post = await GetPostById(id);
+         var postViewModel = await FromPostToPostViewModel(post);
+         return postViewModel;
+      }
+
+      public async Task<PostViewModel[]> GetPostsViewModelByUserId(Guid userId)
+      {
+         var posts = await GetPostByUserId(userId);
+         var postViewModels = await FromPostsToPostViewModels(posts);
          return postViewModels;
       }
 
