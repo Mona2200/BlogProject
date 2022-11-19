@@ -36,7 +36,7 @@ namespace BlogProject.Controllers
       [Route("GetPosts")]
       public async Task<IActionResult> GetPosts()
       {
-         var postViewModels = await _postService.GetPostsViewModelAll();
+         var postViewModels = await _postService.GetPostsViewModel();
 
          var getPosts = new GetPostsViewModel() { posts = postViewModels.Reverse().ToArray() };
 
