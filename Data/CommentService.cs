@@ -33,34 +33,54 @@ namespace BlogProject.Data
          return comment;
       }
 
-      public async Task<CommentViewModel[]> GetCommentsViewModel(Comment[] comments)
+      private async Task<CommentViewModel[]> FromCommentsToCommentViewModels(Comment[] comments)
       {
          var commentsViewModels = new CommentViewModel[comments.Length];
          var j = 0;
          foreach (var comm in comments)
          {
-            commentsViewModels[j] = new CommentViewModel();
-            commentsViewModels[j].Post = await _db.Post.Where(p => p.Id == comm.PostId).FirstOrDefaultAsync();
-            commentsViewModels[j].User = await _db.User.Where(u => u.Id == comm.UserId).FirstOrDefaultAsync();
-
-            commentsViewModels[j].Id = comm.Id;
-            commentsViewModels[j].Content = comm.Content;
+            commentsViewModels[j] = await FromCommentToCommentViewModel(comm);
             j++;
          }
          return commentsViewModels;
       }
 
+      private async Task<CommentViewModel> FromCommentToCommentViewModel(Comment comment)
+      {
+            var commentsViewModels = new CommentViewModel();
+            commentsViewModels.Post = await _db.Post.Where(p => p.Id == comment.PostId).FirstOrDefaultAsync();
+            commentsViewModels.User = await _db.User.Where(u => u.Id == comment.UserId).FirstOrDefaultAsync();
+
+            commentsViewModels.Id = comment.Id;
+            commentsViewModels.Content = comment.Content;
+         return commentsViewModels;
+      }
+
+      public async Task<CommentViewModel[]> GetCommentsViewModel()
+      {
+         var comments = await GetComments();
+         var commentsViewModels = await FromCommentsToCommentViewModels(comments);
+         return commentsViewModels;
+      }
+
+      public async Task<CommentViewModel> GetCommentViewModelById(Guid id)
+      {
+         var comment = await GetCommentById(id);
+         var commentsViewModel = await FromCommentToCommentViewModel(comment);
+         return commentsViewModel;
+      }
+
       public async Task<CommentViewModel[]> GetCommentsViewModelByPostId(Guid postId)
       {
          var comments = await GetCommentByPostId(postId);
-         var commentsViewModels = await GetCommentsViewModel(comments);
+         var commentsViewModels = await FromCommentsToCommentViewModels(comments);
          return commentsViewModels;
       }
 
       public async Task<CommentViewModel[]> GetCommentsViewModelByUserId(Guid userId)
       {
          var comments = await GetCommentByUserId(userId);
-         var commentsViewModels = await GetCommentsViewModel(comments);
+         var commentsViewModels = await FromCommentsToCommentViewModels(comments);
          return commentsViewModels;
       }
 
