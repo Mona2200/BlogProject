@@ -7,6 +7,11 @@ namespace BlogProject.Data
    {
       private readonly BlogDbContext _db = new BlogDbContext();
 
+      public async Task<Role[]> GetRoles()
+      {
+         return await _db.Role.ToArrayAsync();
+      }
+
       public async Task<Role[]> GetRoleByUserId(Guid userId)
       {
          var userRoles = await _db.UserRole.Where(u => u.UserId == userId).ToArrayAsync();
